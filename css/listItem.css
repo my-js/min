@@ -2,7 +2,7 @@
   width: 100%;
   display: block;
   position: relative;
-  padding: 0.55em 0.55em 0.55em 9px;
+  padding: 8px 9px 9px 9px;
   cursor: pointer;
   transition: 0.2s transform, 0.2s opacity;
 }
@@ -40,18 +40,17 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  line-height: 1.1em;
 }
 .searchbar-item .title.wide {
   max-width: 70%;
 }
 
-.searchbar-item i,
+.searchbar-item > i,
 .searchbar-item .icon-image {
   position: absolute;
   top: 0.7em;
   left: -1.4em;
-  opacity: 0.25;
+  opacity: 0.275;
   font-size: 1em;
   width: 1em;
   height: 1em;
@@ -124,6 +123,39 @@ body.dark-mode.touch .searchbar-item .action-button {
   background: rgba(0, 0, 0, 0.35);
 }
 
+/* alternative buttons - text, horizontal */
+
+.searchbar-item .text-action-button-row button {
+  padding: 0.25em;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.2em;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0.5em 0.5em 0 0;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.dark-mode .searchbar-item .text-action-button-row button {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.searchbar-item .text-action-button-row button > i {
+  margin-right: 0.25em;
+}
+
+.searchbar-item .text-action-button-row button:focus,
+.searchbar-item:focus .text-action-button-row button.default-action {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .searchbar-item .text-action-button-row button:focus,
+.dark-mode .searchbar-item:focus .text-action-button-row button.default-action {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* secondary text */
 
 .searchbar-item .secondary-text .md-info {
@@ -152,7 +184,6 @@ body.dark-mode.touch .searchbar-item .action-button {
   white-space: nowrap;
   text-overflow: ellipsis;
   max-height: 2em;
-  line-height: 1em;
 }
 
 .searchbar-item .image {
@@ -166,17 +197,22 @@ body.dark-mode.touch .searchbar-item .action-button {
 
 .searchbar-item .description-block {
   display: block;
-  line-height: 1.15em;
-  max-height: 2.2em;
+  line-height: 1.175em;
+  max-height: 2.35em;
   overflow: hidden;
   opacity: 0.666;
   font-size: 0.85em;
   margin-top: 0.1em;
   margin-right: 2.5em;
 }
+.searchbar-item .description-block strong {
+  font-size: inherit;
+  font-weight: 500;
+}
 /* when a result is selected, we can show more of the description */
 .searchbar-item:focus .description-block {
   max-height: none;
+  opacity: 0.8;
 }
 
 .searchbar-item .attribution {

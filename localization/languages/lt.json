@@ -23,16 +23,21 @@
     "cut": null, // Missing Translation
     "copy": "Kopijuoti", //this is a verb (as in "copy the currently-selected text")
     "paste": "Įdėti",
+    "pasteAndMatchStyle": null, //missing translation
     "goBack": "Grįžti",
     "goForward": "Pirmyn",
     "inspectElement": "Ištirti elementą",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": null, //missing translation
     "DDGAnswerSubtitle": "Atsakymas", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Siūloma svetainė", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Rezultatai iš DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Užduotis %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": null, //missing translation
@@ -50,6 +55,9 @@
     "addBookmark": null, //missing translation
     "searchBookmarks": "Ieškoti adresyno įrašų",
     "bookmarksAddTag": null, //missing translation
+    "bookmarksRenameTag": null, //missing translation
+    "bookmarksDeleteTag": null, //missing translation
+    "deleteBookmarksWithTag": null, //missing translation
     "bookmarksSimilarItems": null, //missing translation
     "searchHistory": "Ieškoti istorijos",
     "importBookmarks": null, //missing translation
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Min nepavyko saugiai prisijungti prie šios internetinės svetainės. Įsitikinkite, kad jūsų kompiuterio laikrodis yra nustatytas teisingai.",
     "addressInvalidTitle": "Šis adresas yra neteisingas.",
     "genericError": "Įvyko klaida",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Ši svetainė gali jums pakenkti.",
-    "phishingErrorMessage": "Gali būti, kad ši svetainė bando pavogti jūsų asmeninę informaciją, tokią kaip slaptažodžiai ar banko informacija.",
-    "phishingErrorVisitAnyway": "Vis tiek apsilankyti svetainėje",
-    "phishingErrorLeave": "Išeiti iš šios svetainės",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Įvyko klaida. Užverkite bet kokius kitus atvertus egzempliorius ir paleiskite Min iš naujo.",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": null //missing translation
     },
-    "settingsCustomBangs": null, // missing translation
-    "settingsCustomBangsAdd": null, // missing translation
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": null, // missing translation
     "settingsCustomBangsSnippet": null, // missing translation
     "settingsCustomBangsRedirect": null, // missing translation
@@ -154,15 +157,24 @@
     "settingsAdditionalFeaturesHeading": "Papildomos ypatybės",
     "settingsUserscriptsToggle": "Įjungti naudotojo scenarijus",
     "settingsShowDividerToggle": null, // Missing translation
+    "settingsLanguageSelection": null, //missing translation
     "settingsSeparateTitlebarToggle": null, //missing translation
     "settingsAutoplayToggle": null, //missing translation 
     "settingsOpenTabsInForegroundToggle": null, //missing translation
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Naudotojo scenarijai leidžia jums modifikuoti internetinių svetainių elgseną - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">sužinokite daugiau</a>."
     },
+    "settingsUserscriptShowDirectory": null, //missing translation,
     "settingsUserAgentToggle": null, //missing translation
     "settingsUpdateNotificationsToggle": "Automatiškai tikrinti ar yra atnaujinimų",
     "settingsUsageStatisticsToggle": null, //missing translation
+    "settingsStartupOptions": null, //missing translation
+    "settingsStartupCreateTask": null, //missing translation
+    "settingsStartupNewTaskandBackground": null, //missing translation
+    "settingsStartupNewTaskOnly": null, //missing translation
+    "settingsNewWindowOptions": null, //missing translation
+    "settingsNewWindowCreateTask": null, //missing translation
+    "settingsNewWindowPickTask": null, //missing translation
     "settingsSearchEngineHeading": "Paieškos sistema",
     "settingsDefaultSearchEngine": "Pasirinkite numatytąją paieškos sistemą:",
     "settingsDDGExplanation": "Nustatykite DuckDuckGo kaip numatytąją paieškos sistemą, norėdami paieškos juostoje matyti greitus atsakymus.",
@@ -182,6 +194,7 @@
     "appMenuDuplicateTab": "Dubliuoti kortelę",
     "appMenuNewPrivateTab": "Nauja privati kortelė",
     "appMenuNewTask": "Nauja užduotis",
+    "appMenuNewWindow": null, //missing translation
     "appMenuSavePageAs": "Įrašyti puslapį kaip",
     "appMenuPrint": "Spausdinti",
     "appMenuEdit": "Taisa",
@@ -190,6 +203,7 @@
     "appMenuCut": "Iškirpti",
     "appMenuCopy": "Kopijuoti",
     "appMenuPaste": "Įdėti",
+    "appMenuPasteAndMatchStyle": null, //missing translation
     "appMenuSelectAll": "Žymėti viską",
     "appMenuFind": "Rasti",
     "appMenuView": "Rodinys",
@@ -221,7 +235,11 @@
     "appMenuShowAll": "Rodyti visus",
     "appMenuQuit": "Išeiti iš %n",
     "appMenuBringToFront": "Perkelti visus į priekį",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": null, //missing translation
     "PDFPageCounter": {
       "unsafeHTML": "puslapis <input type='text'/> iš <span id='total'></span>"
     },
@@ -265,6 +283,7 @@
     "passwordCaptureSave": null, //missing translation
     "passwordCaptureDontSave": null, //missing translation
     "passwordCaptureNeverSave": null, //missing translation
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": null, //missing translation
     "savedPasswordsEmpty": null, //missing translation

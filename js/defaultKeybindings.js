@@ -1,10 +1,14 @@
 const keybindings = require('keybindings.js')
 var webviews = require('webviews.js')
-var webviewGestures = require('webviewGestures.js')
 var browserUI = require('browserUI.js')
 var focusMode = require('focusMode.js')
 var modalMode = require('modalMode.js')
 var tabEditor = require('navbar/tabEditor.js')
+var urlParser = require('util/urlParser.js')
+var keyMapModule = require('util/keyMap.js')
+var settings = require('util/settings/settings.js')
+
+var keyMap = keyMapModule.userKeyMap(settings.get('keyMap'))
 
 const defaultKeybindings = {
   initialize: function () {
@@ -72,7 +76,7 @@ const defaultKeybindings = {
 
     keybindings.defineShortcut('closeTab', function (e) {
       browserUI.closeTab(tabs.getSelected())
-    })
+    }, { contexts: ['default'] })
 
     keybindings.defineShortcut('moveTabLeft', function (e) {
       browserUI.moveTabLeft(tabs.getSelected())
@@ -113,17 +117,13 @@ const defaultKeybindings = {
 
     for (var i = 1; i < 9; i++) {
       (function (i) {
-        keybindings.defineShortcut({ keys: 'mod+' + i }, function (e) {
-          var currentIndex = tabs.getIndex(tabs.getSelected())
-          var newTab = tabs.getAtIndex(currentIndex + i) || tabs.getAtIndex(currentIndex - i)
-          if (newTab) {
-            browserUI.switchToTab(newTab.id)
-          }
-        })
+        // cmd+1 switched to the next tab in versions <= 1.34. If it is set as a custom shortcut to match this behavior, don't register the default shortcut.
+        if (i === 1 && (keyMap.switchToNextTab === 'mod+1' || (keyMap.switchToNextTab instanceof Array && keyMap.switchToNextTab.includes('mod+1')))) {
+          return
+        }
 
-        keybindings.defineShortcut({ keys: 'shift+mod+' + i }, function (e) {
-          var currentIndex = tabs.getIndex(tabs.getSelected())
-          var newTab = tabs.getAtIndex(currentIndex - i) || tabs.getAtIndex(currentIndex + i)
+        keybindings.defineShortcut({ keys: 'mod+' + i }, function (e) {
+          var newTab = tabs.getAtIndex(i - 1)
           if (newTab) {
             browserUI.switchToTab(newTab.id)
           }
@@ -248,36 +248,45 @@ const defaultKeybindings = {
       browserUI.addTab() // create a new, blank tab
     })
 
-    var lastReload = 0
+    keybindings.defineShortcut('closeWindow', function() {
+      ipc.invoke('close')
+    })
 
     keybindings.defineShortcut('reload', function () {
-      var time = Date.now()
-
-      // pressing mod+r twice in a row reloads the whole browser
-      if (time - lastReload < 500) {
-        ipc.send('destroyAllViews')
-        ipc.invoke('reloadWindow')
-      } else if (tabs.get(tabs.getSelected()).url.startsWith(webviews.internalPages.error)) {
+      if (tabs.get(tabs.getSelected()).url.startsWith(webviews.internalPages.error)) {
         // reload the original page rather than show the error page again
         webviews.update(tabs.getSelected(), new URL(tabs.get(tabs.getSelected()).url).searchParams.get('url'))
       } else {
         // this can't be an error page, use the normal reload method
         webviews.callAsync(tabs.getSelected(), 'reload')
       }
-
-      lastReload = time
     })
 
     keybindings.defineShortcut('reloadIgnoringCache', function () {
-        webviews.callAsync(tabs.getSelected(), 'reloadIgnoringCache')
-    })
-
-    keybindings.defineShortcut({ keys: 'mod+=' }, function () {
-      webviewGestures.zoomWebviewIn(tabs.getSelected())
+      webviews.callAsync(tabs.getSelected(), 'reloadIgnoringCache')
     })
 
     keybindings.defineShortcut('showHistory', function () {
       tabEditor.show(tabs.getSelected(), '!history ')
+    })
+
+    keybindings.defineShortcut('copyPageURL', function () {
+      const tab = tabs.get(tabs.getSelected())
+      const url = urlParser.getSourceURL(tab.url)
+      if (url) {
+        const anchorTag = document.createElement('a')
+        anchorTag.href = url
+        anchorTag.textContent = url
+
+        ipc.send('clipboardWriteItem', {
+          'text/plain': url,
+          'text/html': anchorTag.outerHTML,
+          'electron application/bookmark': {
+            title: tab.title,
+            url: url
+          }
+        })
+      }
     })
   }
 }

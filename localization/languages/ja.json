@@ -23,16 +23,21 @@
     "cut": "カット",
     "copy": "コピー", //this is a verb (as in "copy the currently-selected text")
     "paste": "ペースト",
+    "pasteAndMatchStyle": null, //missing translation
     "goBack": "戻る",
     "goForward": "進む",
     "inspectElement": "要素を検証",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "貼り付けて移動",
     "DDGAnswerSubtitle": "インスタントアンサー", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "おすすめサイト", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "DuckDuckGoからの結果", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "タスク %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "すべて表示する",
@@ -50,6 +55,9 @@
     "addBookmark": "ブックマークを追加",
     "searchBookmarks": "ブックマークを検索",
     "bookmarksAddTag": "タグを追加...",
+    "bookmarksRenameTag": null, //missing translation
+    "bookmarksDeleteTag": null, //missing translation
+    "deleteBookmarksWithTag": null, //missing translation
     "bookmarksSimilarItems": "類似アイテム",
     "searchHistory": "検索履歴",
     "importBookmarks": "HTMLファイルからブックマークをインポートする",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Minはこのウェブサイトとの安全な接続を行えませんでした。お使いのコンピューターの時刻が正しく設定されているか確認してください。",
     "addressInvalidTitle": "このアドレスは無効です。",
     "genericError": "エラーが発生しました",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "このサイトは安全ではない可能性があります。",
-    "phishingErrorMessage": "このウェブサイトは、あなたのパスワードや口座情報などの個人情報を盗もうとしている可能性があります。",
-    "phishingErrorVisitAnyway": "それでもこのサイトを訪問する",
-    "phishingErrorLeave": "このサイトから離れる",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "エラーが発生しました。 他の開いているインスタンスを閉じてMinを再起動してください。",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "これまでのところ、Minは<strong></strong>の広告とトラッカーをブロックしています。"
     },
-    "settingsCustomBangs": "bangsのカスタム",
-    "settingsCustomBangsAdd": "カスタムbangを追加",
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": "フレーズ（必須）",
     "settingsCustomBangsSnippet": "説明（オプション）",
     "settingsCustomBangsRedirect": "リダイレクトURL（必須）",
@@ -154,17 +157,26 @@
     "settingsAdditionalFeaturesHeading": "追加機能",
     "settingsUserscriptsToggle": "ユーザースクリプトを有効にする",
     "settingsShowDividerToggle": "タブ間の仕切りを表示",
+    "settingsLanguageSelection": null, //missing translation
     "settingsSeparateTitlebarToggle": "別のタイトルバーを使用する",
     "settingsAutoplayToggle": "自動再生を有効にする",
     "settingsOpenTabsInForegroundToggle": "フォアグラウンドで新しいタブを開く",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "ユーザースクリプトを使用して、Webサイトの動作を変更できます -  <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">詳細</a>。"
     },
+    "settingsUserscriptShowDirectory": null, //missing translation,
     "settingsUserAgentToggle": "カスタムユーザーエージェントを使用する",
     "settingsUpdateNotificationsToggle": "アップデートを自動的に確認する",
     "settingsUsageStatisticsToggle": {
       "unsafeHTML": "使用統計を送信する (<a href=\"https://github.com/minbrowser/min/blob/master/docs/statistics.md\">より詳しい情報</a>)"
     },
+    "settingsStartupOptions": null, //missing translation
+    "settingsStartupCreateTask": null, //missing translation
+    "settingsStartupNewTaskandBackground": null, //missing translation
+    "settingsStartupNewTaskOnly": null, //missing translation
+    "settingsNewWindowOptions": null, //missing translation
+    "settingsNewWindowCreateTask": null, //missing translation
+    "settingsNewWindowPickTask": null, //missing translation
     "settingsSearchEngineHeading": "検索エンジン",
     "settingsDefaultSearchEngine": "デフォルトの検索エンジン:",
     "settingsDDGExplanation": "検索バーにインスタントアンサーを表示するには、DuckDuckGoをデフォルトの検索エンジンに設定してください。",
@@ -184,6 +196,7 @@
     "appMenuDuplicateTab": "重複タブ",
     "appMenuNewPrivateTab": "新規プライベートタブ",
     "appMenuNewTask": "新規タスク",
+    "appMenuNewWindow": null, //missing translation
     "appMenuSavePageAs": "ページを別名で保存",
     "appMenuPrint": "プリント",
     "appMenuEdit": "編集",
@@ -192,6 +205,7 @@
     "appMenuCut": "カット",
     "appMenuCopy": "コピー",
     "appMenuPaste": "ペースト",
+    "appMenuPasteAndMatchStyle": null, //missing translation
     "appMenuSelectAll": "すべて選択",
     "appMenuFind": "検索",
     "appMenuView": "表示",
@@ -223,7 +237,11 @@
     "appMenuShowAll": "すべてを表示",
     "appMenuQuit": "%nを終了",
     "appMenuBringToFront": "すべてを最前面に移動",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": null, //missing translation
     "PDFPageCounter": {
       "unsafeHTML": "<span id='total'></span> ページ中 <input type='text'/> ページ目"
     },
@@ -260,7 +278,7 @@
     "passwordManagerSetupStep2": "次に、ツールを下のボックスにドラッグします。",
     "passwordManagerSetupDragBox": "ここにツールをドラッグ",
     "passwordManagerSetupInstalling": "インストールしています...",
-    "passwordManagerBitwardenSignIn": null, //missing translation
+    "passwordManagerBitwardenSignIn": "Bitwardenアカウントに接続するには、vault.bitwarden.com/#/settings/accountにアクセスし、一番下までスクロールして、「APIキーを表示」を選択します。 次に、値を下のフィールドに貼り付けます。",
     "passwordManagerSetupSignIn": "パスワードマネージャーにログインして、自動入力の使用を開始します。 資格情報はMin内のどこにも保存されません。",
     "disableAutofill": "自動入力を無効にする",
     "passwordManagerSetupUnlockError": "パスワードストアのロック解除に失敗しました： ",
@@ -271,13 +289,14 @@
     "passwordCaptureSave": "保存する",
     "passwordCaptureDontSave": "保存しないで",
     "passwordCaptureNeverSave": "保存しない",
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": "保存されたパスワード",
     "savedPasswordsEmpty": "保存されたパスワードはありません。",
     "savedPasswordsNeverSavedLabel": "保存されなかった",
     "deletePassword": "％sのパスワードを削除しますか？",
     /* Dialogs */
-    "loginPromptTitle": "％hにサインイン（％r）",
+    "loginPromptTitle": "％hにサインイン",
     "dialogConfirmButton": "確認する",
     "dialogSkipButton": "キャンセル",
     "username": "ユーザー名",

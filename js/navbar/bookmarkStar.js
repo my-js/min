@@ -1,4 +1,3 @@
-const db = require('util/database.js').db
 const places = require('places/places.js')
 const bookmarkEditor = require('searchbar/bookmarkEditor.js')
 const searchbar = require('searchbar/searchbar.js')
@@ -26,7 +25,8 @@ const bookmarkStar = {
     places.updateItem(tabs.get(tabId).url, {
       isBookmarked: true,
       title: tabs.get(tabId).title // if this page is open in a private tab, the title may not be saved already, so it needs to be included here
-    }, function () {
+    })
+    .then(function () {
       star.classList.remove('carbon:star')
       star.classList.add('carbon:star-filled')
       star.setAttribute('aria-pressed', true)
@@ -57,7 +57,7 @@ const bookmarkStar = {
 
     // check if the page is bookmarked or not, and update the star to match
 
-    places.getItem(currentURL, function (item) {
+    places.getItem(currentURL).then(function (item) {
       if (item && item.isBookmarked) {
         star.classList.remove('carbon:star')
         star.classList.add('carbon:star-filled')

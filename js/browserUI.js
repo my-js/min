@@ -14,7 +14,12 @@ var searchbar = require('searchbar/searchbar.js')
 /* creates a new task */
 
 function addTask () {
-  tasks.setSelected(tasks.add())
+  // insert after current task
+  let index
+  if (tasks.getSelected()) {
+    index = tasks.getIndex(tasks.getSelected().id) + 1
+  }
+  tasks.setSelected(tasks.add({}, index))
 
   tabBar.updateAll()
   addTab()
@@ -137,6 +142,30 @@ function closeTab (tabId) {
   }
 }
 
+function setWindowTitle () {
+  const task = tasks.getSelected()
+  const tab = task.tabs.get(task.tabs.getSelected())
+
+  const truncateString = (str, len) => {
+    if (str.length > len) {
+      return str.substring(0, len) + '...'
+    } else {
+      return str
+    }
+  }
+
+  const title = [
+    truncateString(tab.title || '', 100),
+    truncateString(task.name || '', 100),
+    'Min'
+  ].filter(str => !!str).join(' | ')
+
+  if (document.title !== title) {
+    document.title = title
+    ipc.send('set-window-title', title)
+  }
+}
+
 /* changes the currently-selected task and updates the UI */
 
 function switchToTask (id) {
@@ -161,21 +190,51 @@ function switchToTask (id) {
   } else {
     addTab()
   }
+
+  setWindowTitle(taskData)
 }
+
+tasks.on('task-updated', function (id, key) {
+  if (key === 'name' && id === tasks.getSelected().id) {
+    setWindowTitle()
+  }
+})
+
+tasks.on('tab-selected', function () {
+  setWindowTitle()
+})
+
+tasks.on('tab-updated', function (id, key) {
+  if (key === 'title') {
+    setWindowTitle()
+  }
+})
 
 /* switches to a tab - update the webview, state, tabstrip, etc. */
 
 function switchToTab (id, options) {
   options = options || {}
 
-  tabEditor.hide()
-
   tabs.setSelected(id)
   tabBar.setActiveTab(id)
   webviews.setSelected(id, {
     focus: options.focusWebview !== false
   })
+
+  tabEditor.hide()
+
+  if (!tabs.get(id).url) {
+    document.body.classList.add('is-ntp')
+  } else {
+    document.body.classList.remove('is-ntp')
+  }
 }
+
+tasks.on('tab-updated', function (id, key) {
+  if (key === 'url' && id === tabs.getSelected()) {
+    document.body.classList.remove('is-ntp')
+  }
+})
 
 webviews.bindEvent('did-create-popup', function (tabId, popupId, initialURL) {
   var popupTab = tabs.add({
@@ -188,7 +247,7 @@ webviews.bindEvent('did-create-popup', function (tabId, popupId, initialURL) {
   switchToTab(popupTab)
 })
 
-webviews.bindEvent('new-tab', function (tabId, url) {
+webviews.bindEvent('new-tab', function (tabId, url, openInForeground) {
   var newTab = tabs.add({
     url: url,
     private: tabs.get(tabId).private // inherit private status from the current tab
@@ -196,7 +255,7 @@ webviews.bindEvent('new-tab', function (tabId, url) {
 
   addTab(newTab, {
     enterEditMode: false,
-    openInBackground: !settings.get('openTabsInForeground')
+    openInBackground: !settings.get('openTabsInForeground') && !openInForeground
   })
 })
 

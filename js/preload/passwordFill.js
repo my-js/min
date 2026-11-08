@@ -24,7 +24,18 @@ wanted to keep it lightweight and not impact browser performace too much.
 */
 
 // "carbon:password"
-const keyIcon = '<svg width="22px" height="22px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="vertical-align: -0.125em;-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M21 2a9 9 0 0 0-9 9a8.87 8.87 0 0 0 .39 2.61L2 24v6h6l10.39-10.39A9 9 0 0 0 30 11.74a8.77 8.77 0 0 0-1.65-6A9 9 0 0 0 21 2zm0 16a7 7 0 0 1-2-.3l-1.15-.35l-.85.85l-3.18 3.18L12.41 20L11 21.41l1.38 1.38l-1.59 1.59L9.41 23L8 24.41l1.38 1.38L7.17 28H4v-3.17L13.8 15l.85-.85l-.29-.95a7.14 7.14 0 0 1 3.4-8.44a7 7 0 0 1 10.24 6a6.69 6.69 0 0 1-1.09 4A7 7 0 0 1 21 18z" fill="currentColor"/><circle cx="22" cy="10" r="2" fill="currentColor"/></svg>'
+
+const getKeyIcon = () => {
+  const keyIcon = '<svg width="22px" height="22px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" focusable="false" width="1em" height="1em" style="vertical-align: -0.125em;-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path d="M21 2a9 9 0 0 0-9 9a8.87 8.87 0 0 0 .39 2.61L2 24v6h6l10.39-10.39A9 9 0 0 0 30 11.74a8.77 8.77 0 0 0-1.65-6A9 9 0 0 0 21 2zm0 16a7 7 0 0 1-2-.3l-1.15-.35l-.85.85l-3.18 3.18L12.41 20L11 21.41l1.38 1.38l-1.59 1.59L9.41 23L8 24.41l1.38 1.38L7.17 28H4v-3.17L13.8 15l.85-.85l-.29-.95a7.14 7.14 0 0 1 3.4-8.44a7 7 0 0 1 10.24 6a6.69 6.69 0 0 1-1.09 4A7 7 0 0 1 21 18z" fill="currentColor"/><circle cx="22" cy="10" r="2" fill="currentColor"/></svg>'
+
+  const keyIconPolicy = trustedTypes.createPolicy('minAutofillTrustedKeyIcon', {
+    createHTML: (string) => string
+  })
+
+  return keyIconPolicy.createHTML(keyIcon)
+}
+
+const keyIcon = getKeyIcon()
 
 // Ref to added unlock button.
 var currentUnlockButton = null
@@ -109,8 +120,8 @@ function getBestInput (names, exclusionNames, types) {
 
     // We expect the field to have either 'name', 'formcontrolname' or 'id' attribute
     // that we can use to identify it as a login form input field.
-    if (names.length === 0 || checkAttributes(field, ['name', 'formcontrolname', 'id', 'placholder'], names)) {
-      if (!checkAttributes(field, ['name', 'formcontrolname', 'id', 'placeholder'], exclusionNames) && field.type !== 'hidden') {
+    if (names.length === 0 || checkAttributes(field, ['name', 'formcontrolname', 'id', 'placholder', 'aria-label'], names)) {
+      if (!checkAttributes(field, ['name', 'formcontrolname', 'id', 'placeholder', 'aria-label'], exclusionNames) && field.type !== 'hidden') {
         return field
       }
     }
@@ -120,12 +131,27 @@ function getBestInput (names, exclusionNames, types) {
 
 // Shortcut to get username fields from a page.
 function getBestUsernameField () {
-  return getBestInput(['user', 'name', 'mail', 'login', 'auth', 'identifier'], ['confirm', 'filename'], ['text', 'email'])
+  return getBestInput(['user', 'name', 'mail', 'login', 'auth', 'identifier', 'account', 'acct'], ['confirm', 'filename'], ['text', 'email'])
 }
 
 // Shortcut to get password fields from a page.
 function getBestPasswordField () {
   return getBestInput([], [], ['password'])
+}
+
+// Get a "confirm password" field, that is different from the given password input
+function getPasswordConfirmationField (primaryField) {
+  const autocompleteMarkedFields = Array.from(document.querySelectorAll('[autocomplete="new-password"]'))
+  // If there is at lest one marked field in the docuemnt, assume the confirm password field is marked too
+  if (autocompleteMarkedFields.length > 0) {
+    return autocompleteMarkedFields.find(field => field !== primaryField)
+  } else {
+    const bestConfirmInput = getBestInput(['confirm', 'retype'], [], ['password'])
+    if (bestConfirmInput && bestConfirmInput !== primaryField) {
+      return bestConfirmInput
+    }
+  }
+  return null
 }
 
 // Removes credentials list overlay.
@@ -184,7 +210,7 @@ function addFocusListener (element, credentials) {
   // Adds an option row to the list container.
   function addOption (parent, username) {
     const suggestionItem = document.createElement('div')
-    suggestionItem.innerHTML = username
+    suggestionItem.textContent = username
     suggestionItem.style = 'padding: 10px; cursor: pointer; background-color: #fff; border-bottom: 1px solid #d4d4d4;'
 
     // Hover.
@@ -236,7 +262,7 @@ function addFocusListener (element, credentials) {
 
 function requestAutofill () {
   if (getBestUsernameField() && getBestPasswordField()) {
-    ipc.send('password-autofill', document.location.hostname)
+    ipc.send('password-autofill')
   }
 }
 
@@ -326,7 +352,11 @@ window.addEventListener('submit', handleFormSubmit)
 
 // watch for clicks on button[type=submit]
 window.addEventListener('click', function (e) {
-  e.path.forEach(function (el) {
+  const path = (e.path) || (e.composed && e.composedPath())
+  if (!path) {
+    return
+  }
+  path.forEach(function (el) {
     if (el.tagName === 'BUTTON' && el.getAttribute('type') === 'submit' && !el.disabled) {
       handleFormSubmit()
     }
@@ -344,5 +374,62 @@ HTMLFormElement.prototype.submit = function () {
 window.addEventListener('message', function (e) {
   if (e.data && e.data.message && e.data.message === 'formSubmit') {
     handleFormSubmit()
+  }
+})
+
+const passwordGenerationCharset = 'bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ0123456789-_!'
+
+function fillWithInputEvent (input, value) {
+  input.value = value
+  const simulatedEvent = new InputEvent('input', {
+    inputType: 'insertReplacementText',
+    data: value
+  })
+  input.dispatchEvent(simulatedEvent)
+}
+
+/*
+Multiple generation requests use the same password for a 5-minute period so that it's easier to fill "confirm password" fields
+Since this script is part of the preload, it will only persist for a single page navigation
+*/
+let priorGeneratedPassword = ''
+
+ipc.on('generate-password', function (location) {
+  var input = (document.activeElement.matches('input[type=password]')) ? document.activeElement : Array.from(document.elementsFromPoint(location.x, location.y)).filter(el => el.matches('input[type=password]'))
+
+  if (input) {
+    let generatedPassword = ''
+
+    if (priorGeneratedPassword) {
+      generatedPassword = priorGeneratedPassword
+    } else {
+      // Math.random would probably suffice also, as the page is about to have access to the password anyway once we insert it into the field.
+      const values = new Uint8Array(16)
+      crypto.getRandomValues(values)
+
+      values.forEach(function (value) {
+        generatedPassword += passwordGenerationCharset[Math.floor((value / 256) * passwordGenerationCharset.length)]
+      })
+
+      priorGeneratedPassword = generatedPassword
+      setTimeout(() => {
+        priorGeneratedPassword = ''
+      }, 5 * 60 * 1000)
+    }
+
+    fillWithInputEvent(input, generatedPassword)
+
+    var confirmationInput = getPasswordConfirmationField(input)
+
+    if (confirmationInput) {
+      fillWithInputEvent(confirmationInput, generatedPassword)
+    }
+
+    setTimeout(function () {
+      if (input.value === generatedPassword) {
+        var usernameValue = getBestUsernameField()?.value
+        ipc.send('password-form-filled', [window.location.hostname, usernameValue, generatedPassword])
+      }
+    }, 0)
   }
 })

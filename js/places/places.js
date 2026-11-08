@@ -1,24 +1,46 @@
-/* global Worker tabs */
+/* global tabs */
 
 var webviews = require('webviews.js')
-const db = require('util/database.js').db
 const searchEngine = require('util/searchEngine.js')
 const urlParser = require('util/urlParser.js')
 
 const places = {
+  messagePort: null,
+  sendMessage: function (data) {
+    places.messagePort.postMessage(data)
+  },
+  pendingPromises: {},
+  invokeWithPromise: function (data) {
+    const callbackId = Math.random()
+    const { promise, resolve, reject } = Promise.withResolvers()
+    places.pendingPromises[callbackId] = { promise, resolve, reject }
+    places.messagePort.postMessage({
+      ...data,
+      callbackId
+    })
+    return promise
+  },
+  replyToPromise: function (callbackId, result) {
+    if (places.pendingPromises[callbackId]) {
+      places.pendingPromises[callbackId].resolve(result)
+      delete places.pendingPromises[callbackId]
+    } else {
+      throw new Error('places is missing callbackId')
+    }
+  },
   savePage: function (tabId, extractedText) {
     /* this prevents pages that are immediately left from being saved to history, and also gives the page-favicon-updated event time to fire (so the colors saved to history are correct). */
     setTimeout(function () {
       const tab = tabs.get(tabId)
       if (tab) {
         const data = {
-          url: urlParser.getSourceURL(tab.url), // for PDF viewer and reader mode, save the original page URL and not the viewer URL
+          url: urlParser.removeTextFragment(urlParser.getSourceURL(tab.url)), // for PDF viewer and reader mode, save the original page URL and not the viewer URL
           title: tab.title,
           color: tab.backgroundColor,
           extractedText: extractedText
         }
 
-        places.worker.postMessage({
+        places.sendMessage({
           action: 'updatePlace',
           pageData: data,
           flags: {
@@ -59,22 +81,8 @@ const places = {
       places.savePage(tabId, data.extractedText)
     }
   },
-  callbacks: [],
-  addWorkerCallback: function (callback) {
-    const callbackId = (Date.now() / 1000) + Math.random()
-    places.callbacks.push({ id: callbackId, fn: callback })
-    return callbackId
-  },
-  runWorkerCallback: function (id, data) {
-    for (var i = 0; i < places.callbacks.length; i++) {
-      if (places.callbacks[i].id === id) {
-        places.callbacks[i].fn(data)
-        places.callbacks.splice(i, 1)
-      }
-    }
-  },
   deleteHistory: function (url) {
-    places.worker.postMessage({
+    places.sendMessage({
       action: 'deleteHistory',
       pageData: {
         url: url
@@ -82,124 +90,115 @@ const places = {
     })
   },
   deleteAllHistory: function () {
-    places.worker.postMessage({
+    places.sendMessage({
       action: 'deleteAllHistory'
     })
   },
-  searchPlaces: function (text, callback, options) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  searchPlaces: function (text, options) {
+    return places.invokeWithPromise({
       action: 'searchPlaces',
       text: text,
-      callbackId: callbackId,
       options: options
     })
   },
-  searchPlacesFullText: function (text, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  searchPlacesFullText: function (text) {
+    return places.invokeWithPromise({
       action: 'searchPlacesFullText',
-      text: text,
-      callbackId: callbackId
+      text: text
     })
   },
-  getPlaceSuggestions: function (url, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  getPlaceSuggestions: function (url) {
+    return places.invokeWithPromise({
       action: 'getPlaceSuggestions',
-      text: url,
-      callbackId: callbackId
+      text: url
     })
   },
-  onMessage: function (e) { // assumes this is from a search operation
-    places.runWorkerCallback(e.data.callbackId, e.data.result)
+  onMessage: function (e) {
+    if (e.data.callbackId) {
+      places.replyToPromise(e.data.callbackId, e.data.result)
+    }
   },
-  getItem: function (url, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  getItem: function (url) {
+    return places.invokeWithPromise({
       action: 'getPlace',
       pageData: {
         url: url
-      },
-      callbackId: callbackId
+      }
     })
   },
-  updateItem: function (url, fields, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  getAllItems: function () {
+    return places.invokeWithPromise({
+      action: 'getAllPlaces'
+    })
+  },
+  updateItem: function (url, fields) {
+    return places.invokeWithPromise({
       action: 'updatePlace',
       pageData: {
         url: url,
         ...fields
-      },
-      callbackId: callbackId
+      }
     })
   },
   toggleTag: function (url, tag) {
-    db.places.where('url').equals(url).first(function (item) {
-      if (!item) {
-        return
-      }
-      if (item.tags.includes(tag)) {
-        item.tags = item.tags.filter(t => t !== tag)
-      } else {
-        item.tags.push(tag)
-      }
-      places.worker.postMessage({
-        action: 'updatePlace',
-        pageData: {
-          url: url,
-          tags: item.tags
+    return places.getItem(url)
+      .then(function (item) {
+        if (!item) {
+          return
         }
+        if (item.tags.includes(tag)) {
+          item.tags = item.tags.filter(t => t !== tag)
+        } else {
+          item.tags.push(tag)
+        }
+        places.sendMessage({
+          action: 'updatePlace',
+          pageData: {
+            url: url,
+            tags: item.tags
+          }
+        })
       })
-    })
   },
-  getSuggestedTags: function (url, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  getSuggestedTags: function (url) {
+    return places.invokeWithPromise({
       action: 'getSuggestedTags',
       pageData: {
         url: url
-      },
-      callbackId: callbackId
+      }
     })
   },
-  getAllTagsRanked: function (url, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  getAllTagsRanked: function (url) {
+    return places.invokeWithPromise({
       action: 'getAllTagsRanked',
       pageData: {
         url: url
-      },
-      callbackId: callbackId
+      }
     })
   },
-  getSuggestedItemsForTags: function (tags, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  getSuggestedItemsForTags: function (tags) {
+    return places.invokeWithPromise({
       action: 'getSuggestedItemsForTags',
       pageData: {
         tags: tags
-      },
-      callbackId: callbackId
+      }
     })
   },
-  autocompleteTags: function (tags, callback) {
-    const callbackId = places.addWorkerCallback(callback)
-    places.worker.postMessage({
+  autocompleteTags: function (tags) {
+    return places.invokeWithPromise({
       action: 'autocompleteTags',
       pageData: {
         tags: tags
-      },
-      callbackId: callbackId
+      }
     })
   },
   initialize: function () {
-    if (places.worker) {
-      places.worker.terminate()
-    }
-    places.worker = new Worker('js/places/placesWorker.js')
-    places.worker.onmessage = places.onMessage
+    const { port1, port2 } = new MessageChannel()
+
+    ipc.postMessage('places-connect', null, [port1])
+    places.messagePort = port2
+    port2.addEventListener('message', places.onMessage)
+    port2.start()
 
     webviews.bindIPC('pageData', places.receiveHistoryData)
   }

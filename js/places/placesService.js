@@ -1,13 +1,6 @@
-/* global importScripts db performance searchPlaces postMessage fullTextPlacesSearch */
+/* global db performance searchPlaces fullTextPlacesSearch */
 
-console.log('worker started ', performance.now())
-
-importScripts('../../node_modules/dexie/dist/dexie.min.js')
-importScripts('../../node_modules/string_score/string_score.min.js')
-importScripts('../util/database.js')
-importScripts('fullTextSearch.js')
-importScripts('placesSearch.js')
-importScripts('tagIndex.js')
+const { ipcRenderer } = require('electron')
 
 const spacesRegex = /[+\s._/-]+/g // things that could be considered spaces
 
@@ -27,7 +20,6 @@ function calculateHistoryScore (item) { // item.boost - how much the score shoul
 }
 
 const oneDayInMS = 24 * 60 * 60 * 1000 // one day in milliseconds
-const oneWeekAgo = Date.now() - (oneDayInMS * 7)
 
 // the oldest an item can be to remain in the database
 const maxItemAge = oneDayInMS * 42
@@ -51,16 +43,18 @@ function addToHistoryCache (item) {
     tagIndex.addPage(item)
   }
   delete item.pageHTML
-  delete item.extractedText
   delete item.searchIndex
+
+  item.searchTextCache = getSearchTextCache(item)
 
   historyInMemoryCache.push(item)
 }
 
 function addOrUpdateHistoryCache (item) {
   delete item.pageHTML
-  delete item.extractedText
   delete item.searchIndex
+
+  item.searchTextCache = getSearchTextCache(item)
 
   let oldItem
 
@@ -81,6 +75,15 @@ function addOrUpdateHistoryCache (item) {
   }
 }
 
+function removeFromHistoryCache (url) {
+  for (let i = 0; i < historyInMemoryCache.length; i++) {
+    if (historyInMemoryCache[i].url === url) {
+      tagIndex.removePage(historyInMemoryCache[i])
+      historyInMemoryCache.splice(i, 1)
+    }
+  }
+}
+
 function loadHistoryInMemory () {
   historyInMemoryCache = []
 
@@ -98,19 +101,19 @@ function loadHistoryInMemory () {
 
 loadHistoryInMemory()
 
-onmessage = function (e) {
-  const action = e.data.action
-  const pageData = e.data.pageData
-  const flags = e.data.flags || {}
-  const searchText = e.data.text && e.data.text.toLowerCase()
-  const callbackId = e.data.callbackId
-  const options = e.data.options
+function handleRequest (data, cb) {
+  const action = data.action
+  const pageData = data.pageData
+  const flags = data.flags || {}
+  const searchText = data.text && data.text.toLowerCase()
+  const callbackId = data.callbackId
+  const options = data.options
 
   if (action === 'getPlace') {
     let found = false
     for (let i = 0; i < historyInMemoryCache.length; i++) {
       if (historyInMemoryCache[i].url === pageData.url) {
-        postMessage({
+        cb({
           result: historyInMemoryCache[i],
           callbackId: callbackId
         })
@@ -119,11 +122,18 @@ onmessage = function (e) {
       }
     }
     if (!found) {
-      postMessage({
+      cb({
         result: null,
         callbackId: callbackId
       })
     }
+  }
+
+  if (action === 'getAllPlaces') {
+    cb({
+      result: historyInMemoryCache,
+      callbackId: callbackId
+    })
   }
 
   if (action === 'updatePlace') {
@@ -139,7 +149,7 @@ onmessage = function (e) {
             visitCount: 0,
             lastVisit: Date.now(),
             pageHTML: '',
-            extractedText: '',
+            extractedText: pageData.extractedText,
             searchIndex: [],
             isBookmarked: false,
             tags: [],
@@ -149,8 +159,9 @@ onmessage = function (e) {
         for (const key in pageData) {
           if (key === 'extractedText') {
             item.searchIndex = tokenize(pageData.extractedText)
+            item.extractedText = pageData.extractedText
           } else if (key === 'tags') {
-            // ensure tags are never saved with spaces in them
+          // ensure tags are never saved with spaces in them
             item.tags = pageData.tags.map(t => t.replace(/\s/g, '-'))
           } else {
             item[key] = pageData[key]
@@ -168,7 +179,7 @@ onmessage = function (e) {
         } else {
           addOrUpdateHistoryCache(item)
         }
-        postMessage({
+        cb({
           result: null,
           callbackId: callbackId
         })
@@ -183,12 +194,7 @@ onmessage = function (e) {
   if (action === 'deleteHistory') {
     db.places.where('url').equals(pageData.url).delete()
 
-    // delete from the in-memory cache
-    for (let i = 0; i < historyInMemoryCache.length; i++) {
-      if (historyInMemoryCache[i].url === pageData.url) {
-        historyInMemoryCache.splice(i, 1)
-      }
-    }
+    removeFromHistoryCache(pageData.url)
   }
 
   if (action === 'deleteAllHistory') {
@@ -200,28 +206,28 @@ onmessage = function (e) {
   }
 
   if (action === 'getSuggestedTags') {
-    postMessage({
+    cb({
       result: tagIndex.getSuggestedTags(historyInMemoryCache.find(i => i.url === pageData.url)),
       callbackId: callbackId
     })
   }
 
   if (action === 'getAllTagsRanked') {
-    postMessage({
+    cb({
       result: tagIndex.getAllTagsRanked(historyInMemoryCache.find(i => i.url === pageData.url)),
       callbackId: callbackId
     })
   }
 
   if (action === 'getSuggestedItemsForTags') {
-    postMessage({
+    cb({
       result: tagIndex.getSuggestedItemsForTags(pageData.tags),
       callbackId: callbackId
     })
   }
 
   if (action === 'autocompleteTags') {
-    postMessage({
+    cb({
       result: tagIndex.autocompleteTags(pageData.tags),
       callbackId: callbackId
     })
@@ -229,7 +235,7 @@ onmessage = function (e) {
 
   if (action === 'searchPlaces') { // do a history search
     searchPlaces(searchText, function (matches) {
-      postMessage({
+      cb({
         result: matches,
         callbackId: callbackId
       })
@@ -242,7 +248,7 @@ onmessage = function (e) {
         return calculateHistoryScore(b) - calculateHistoryScore(a)
       })
 
-      postMessage({
+      cb({
         result: matches.slice(0, 100),
         callbackId: callbackId
       })
@@ -263,12 +269,11 @@ onmessage = function (e) {
         return b.hScore - a.hScore
       })
 
-      postMessage({
+      cb({
         result: results.slice(0, 100),
         callbackId: callbackId
       })
     }
-
     if (historyInMemoryCache.length > 10 || doneLoadingHistoryCache) {
       returnSuggestionResults()
     } else {
@@ -276,3 +281,14 @@ onmessage = function (e) {
     }
   }
 }
+
+ipcRenderer.on('places-connect', function (e) {
+  e.ports[0].addEventListener('message', function (e2) {
+    const data = e2.data
+
+    handleRequest(data, function (res) {
+      e.ports[0].postMessage(res)
+    })
+  })
+  e.ports[0].start()
+})

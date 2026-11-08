@@ -23,16 +23,21 @@
     "cut": "Wytnij",
     "copy": "Kopiuj", //this is a verb (as in "copy the currently-selected text")
     "paste": "Wklej",
+    "pasteAndMatchStyle": "Wklej i dopasuj styl",
     "goBack": "Cofnij",
     "goForward": "Dalej",
     "inspectElement": "Sprawdź element",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "Wklej i idź",
     "DDGAnswerSubtitle": "Odpowiedź", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Sugerowana strona", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Wyniki z DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Zadanie %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Pokaż więcej",
@@ -50,6 +55,9 @@
     "addBookmark": "Dodaj zakładkę",
     "searchBookmarks": "Zakładki wyszukiwania",
     "bookmarksAddTag": "Dodaj znacznik...",
+    "bookmarksRenameTag": "Zmień nazwę tagu",
+    "bookmarksDeleteTag": "Usuń tag",
+    "deleteBookmarksWithTag": "Usuń zakładki z tagiem",
     "bookmarksSimilarItems": "Podobne pozycje",
     "searchHistory": "Historia wyszukiwania",
     "importBookmarks": "Importuj zakładki z pliku HTML",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Min nie może bezpiecznie połączyć się z tą witryną. Upewnij się, że zegar komputera jest ustawiony prawidłowo.",
     "addressInvalidTitle": "Ten adres jest nieprawidłowy.",
     "genericError": "Wystąpił błąd",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Ta strona nie jest bezpieczna.",
-    "phishingErrorMessage": "Ta strona może próbować wykraść twoje dane osobowe, takie jak hasła lub informacje bankowe.",
-    "phishingErrorVisitAnyway": "Odwiedź stronę mimo to",
-    "phishingErrorLeave": "Opuść tę stronę",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Wystąpił błąd. Zamknij wszystkie inne otwarte wystąpienia i uruchom ponownie Min.",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "Jak dotąd Min zablokował reklamy i moduły śledzące w ilości: <strong></strong>."
     },
-    "settingsCustomBangs": "Niestandardowe bangs",
-    "settingsCustomBangsAdd": "Dodaj niestandardowy bang",
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": "Wyrażenie (wymagane)",
     "settingsCustomBangsSnippet": "Opis (opcjonalnie)",
     "settingsCustomBangsRedirect": "Adres URL przekierowania (wymagane)",
@@ -154,17 +157,26 @@
     "settingsAdditionalFeaturesHeading": "Dodatkowe funkcje",
     "settingsUserscriptsToggle": "Włącz skrypty użytkownika",
     "settingsShowDividerToggle": "Pokaż linię rozdzielającą między zakładkami",
+    "settingsLanguageSelection": "Język: ",
     "settingsSeparateTitlebarToggle": "Użyj osobnego paska tytułu",
     "settingsAutoplayToggle": "Włącz autoodtwarzanie",
     "settingsOpenTabsInForegroundToggle": "Otwórz nowe karty na pierwszym planie",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Skrypty użytkownika pozwalają modyfikować zachowanie stron internetowych - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">dowiedz się więcej</a>."
     },
+    "settingsUserscriptShowDirectory": "Pokaż katalog skryptów",
     "settingsUserAgentToggle": "Użyj niestandardowego klienta użytkownika",
     "settingsUpdateNotificationsToggle": "Automatycznie sprawdź dostępność aktualizacji",
     "settingsUsageStatisticsToggle": {
       "unsafeHTML": "Wysyłaj statystyki użytkowania (<a href=\"https://github.com/minbrowser/min/blob/master/docs/statistics.md\">Więcej informacji</a>)"
     },
+    "settingsStartupOptions": "Podczas uruchamiania Min",
+    "settingsStartupCreateTask": "Otwieraj ostatnie karty",
+    "settingsStartupNewTaskandBackground": "Przenoś poprzednie karty na drugi plan",
+    "settingsStartupNewTaskOnly": "Otwieraj nową, pustą kartę",
+    "settingsNewWindowOptions": "W nowych oknach: ",
+    "settingsNewWindowCreateTask": "Utwórz nowe zadanie",
+    "settingsNewWindowPickTask": "Pokaż listę zadań",
     "settingsSearchEngineHeading": "Wyszukiwarka",
     "settingsDefaultSearchEngine": "Wybierz domyślną wyszukiwarkę:",
     "settingsDDGExplanation": "Ustaw DuckDuckGo jako domyślną wyszukiwarkę, aby zobaczyć błyskawiczne odpowiedzi na pasku wyszukiwania.",
@@ -184,6 +196,7 @@
     "appMenuDuplicateTab": "Powielona karta",
     "appMenuNewPrivateTab": "Nowa karta prywatna",
     "appMenuNewTask": "Nowe zadanie",
+    "appMenuNewWindow": "Nowe okno",
     "appMenuSavePageAs": "Zapisz stronę jako",
     "appMenuPrint": "Drukuj",
     "appMenuEdit": "Edytuj",
@@ -192,6 +205,7 @@
     "appMenuCut": "Wytnij",
     "appMenuCopy": "Kopiuj",
     "appMenuPaste": "Wklej",
+    "appMenuPasteAndMatchStyle": "Wklej i dopasuj styl",
     "appMenuSelectAll": "Zaznacz wszystko",
     "appMenuFind": "Znajdź",
     "appMenuView": "Widok",
@@ -223,7 +237,11 @@
     "appMenuShowAll": "Pokaż wszystko",
     "appMenuQuit": "Zamknij %n",
     "appMenuBringToFront": "Umieść wszystko na wierzchu",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": "Odwróć kolory strony",
     "PDFPageCounter": {
       "unsafeHTML": "strona <input type='text'/> z <span id='total'></span>"
     },
@@ -260,7 +278,7 @@
     "passwordManagerSetupStep2": "Następnie przeciągnij narzędzie do pola poniżej:",
     "passwordManagerSetupDragBox": "Przeciągnij narzędzie tutaj",
     "passwordManagerSetupInstalling": "Instalowanie...",
-    "passwordManagerBitwardenSignIn": null, //missing translation
+    "passwordManagerBitwardenSignIn": "Aby połączyć swoje konto Bitwarden, przejdź do vault.bitwarden.com/#/settings/account, przewiń w dół i wybierz „Wyświetl klucz API”. Następnie wklej wartości w poniższe pola.",
     "passwordManagerSetupSignIn": "Zaloguj się do menedżera haseł, aby rozpocząć korzystanie z autouzupełniania. Twoje dane uwierzytelniające nie będą przechowywane nigdzie w Min.",
     "disableAutofill": "Wyłącz autouzupełnianie",
     "passwordManagerSetupUnlockError": "nie udało się odblokować przechowalni haseł: ",
@@ -271,13 +289,14 @@
     "passwordCaptureSave": "Zapisz",
     "passwordCaptureDontSave": "Nie zapisuj",
     "passwordCaptureNeverSave": "Nigdy nie zapisuj",
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": "Zapisane hasła",
     "savedPasswordsEmpty": "Brak zapisanych haseł.",
     "savedPasswordsNeverSavedLabel": "Nigdy nie zapisano",
     "deletePassword": "Usunąć hasło dla %s?",
     /* Dialogs */
-    "loginPromptTitle": "Zaloguj się do %h (%r)",
+    "loginPromptTitle": "Zaloguj się do %h",
     "dialogConfirmButton": "Potwierdź",
     "dialogSkipButton": "Anuluj",
     "username": "Nazwa Użytkownika",

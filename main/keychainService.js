@@ -1,6 +1,5 @@
 /* Uses Electron's safeStorage to encrypt a password file - encryption key gets stored in the system keychain */
 
-const keytar = require('keytar')
 const safeStorage = require('electron').safeStorage
 const passwordFilePath = path.join(userDataPath, 'passwordStore')
 
@@ -18,18 +17,26 @@ file format:
 }
 */
 
-function readSavedPasswordFile () {
+async function readSavedPasswordFile () {
   let file
   try {
-    file = fs.readFileSync(passwordFilePath)
+    file = await fsPromises.readFile(passwordFilePath)
   } catch (e) {
     if (e.code !== 'ENOENT') {
       console.warn(e)
       throw new Error(e)
     }
   }
+
   if (file) {
-    return JSON.parse(safeStorage.decryptString(file))
+    const decryptResult = await safeStorage.decryptStringAsync(file)
+
+    if (decryptResult.shouldReEncrypt) {
+      console.warn('shouldReEncrypt=true for saved password file, re-encrypting')
+      await writeSavedPasswordFile(decryptResult.result)
+    }
+
+    return JSON.parse(decryptResult.result)
   } else {
     return {
       version: 1,
@@ -38,60 +45,80 @@ function readSavedPasswordFile () {
   }
 }
 
-function writeSavedPasswordFile (content) {
-  fs.writeFileSync(passwordFilePath, safeStorage.encryptString(JSON.stringify(content)))
+async function writeSavedPasswordFile (content) {
+  const encrypted = await safeStorage.encryptStringAsync(
+    typeof content === 'string' ? content : JSON.stringify(content)
+  )
+  await fsPromises.writeFile(passwordFilePath, encrypted)
 }
 
-function credentialStoreSetPassword (account) {
-  const fileContent = readSavedPasswordFile()
+async function credentialStoreSetPasswordBulk (accounts) {
+  const fileContent = await readSavedPasswordFile()
+
+  fileContent.credentials = accounts
+  await writeSavedPasswordFile(fileContent)
+}
+
+async function credentialStoreSetPassword (account) {
+  const fileContent = await readSavedPasswordFile()
 
   // delete duplicate credentials
   for (let i = 0; i < fileContent.credentials.length; i++) {
-    if (fileContent.credentials[i].domain === account.domain && fileContent.credentials[i].username === account.username) {
+    if (fileContent.credentials[i].domain === account.domain &&
+        fileContent.credentials[i].username === account.username) {
       fileContent.credentials.splice(i, 1)
       i--
     }
   }
 
   fileContent.credentials.push(account)
-  writeSavedPasswordFile(fileContent)
+  await writeSavedPasswordFile(fileContent)
 }
 
-ipc.handle('credentialStoreSetPassword', async function (event, account) {
-  return credentialStoreSetPassword(account)
+// Serialize all password store operations to prevent concurrent
+// reads and writes from overwriting each other's changes.
+let passwordStoreQueue = Promise.resolve()
+
+function queuePasswordStoreOperation (operation) {
+  const result = passwordStoreQueue.then(operation)
+
+  // Keep the queue usable even if an operation fails.
+  passwordStoreQueue = result.catch(() => {})
+
+  return result
+}
+
+ipc.handle('credentialStoreSetPasswordBulk', function (event, accounts) {
+  return queuePasswordStoreOperation(() =>
+    credentialStoreSetPasswordBulk(accounts)
+  )
 })
 
-ipc.handle('credentialStoreDeletePassword', async function (event, account) {
-  const fileContent = readSavedPasswordFile()
+ipc.handle('credentialStoreSetPassword', function (event, account) {
+  return queuePasswordStoreOperation(() =>
+    credentialStoreSetPassword(account)
+  )
+})
 
-  // delete matching credentials
-  for (let i = 0; i < fileContent.credentials.length; i++) {
-    if (fileContent.credentials[i].domain === account.domain && fileContent.credentials[i].username === account.username) {
-      fileContent.credentials.splice(i, 1)
-      i--
+ipc.handle('credentialStoreDeletePassword', function (event, account) {
+  return queuePasswordStoreOperation(async () => {
+    const fileContent = await readSavedPasswordFile()
+
+    // delete matching credentials
+    for (let i = 0; i < fileContent.credentials.length; i++) {
+      if (fileContent.credentials[i].domain === account.domain &&
+          fileContent.credentials[i].username === account.username) {
+        fileContent.credentials.splice(i, 1)
+        i--
+      }
     }
-  }
 
-  return writeSavedPasswordFile(fileContent)
+    return writeSavedPasswordFile(fileContent)
+  })
 })
 
-ipc.handle('credentialStoreGetCredentials', async function () {
-  return readSavedPasswordFile().credentials
+ipc.handle('credentialStoreGetCredentials', function () {
+  return queuePasswordStoreOperation(async () => {
+    return (await readSavedPasswordFile()).credentials
+  })
 })
-
-/* On startup, migrate everything from keychain */
-
-setTimeout(function () {
-  if (!settings.get('v1_23_keychainMigrationComplete')) {
-    keytar.findCredentials('Min saved password').then(function (results) {
-      results.forEach(function (result) {
-        credentialStoreSetPassword({
-          domain: JSON.parse(result.account).domain,
-          username: JSON.parse(result.account).username,
-          password: result.password
-        })
-      })
-      settings.set('v1_23_keychainMigrationComplete', true)
-    })
-  }
-}, 5000)

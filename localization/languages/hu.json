@@ -6,50 +6,58 @@
         these are the items displayed in the menu when you right-click on a page
         */
     "addToDictionary": null, //missing translation
-    "pictureInPicture": null, //missing translation
+    "pictureInPicture": "Kép a képben", //missing translation
     "openInNewTab": "Megnyitás új fülön",
     "openInNewPrivateTab": "Megnyitás új privát fülön",
-    "saveLinkAs": null, //missing translation
+    "saveLinkAs": "Link mentése mint",
     "viewImage": "Kép megtekintése",
     "openImageInNewTab": "Kép megnyitása új fülön",
     "openImageInNewPrivateTab": "Kép megnyitása új privát fülön",
     "saveImageAs": "Kép mentése másként",
     "searchWith": "Keresés %s keresővel", //%s will be replaced with the name of the current search engine
     "copyLink": "Hivatkozás másolás",
-    "copyEmailAddress": null, //missing translation
-    "selectAll": null, // Missing Translation
-    "undo": null, // Missing Translation
-    "redo": null, // Missing Translation
-    "cut": null, // Missing Translation
+    "copyEmailAddress": "E-mail cím másolása",
+    "selectAll": "Összes kiválasztása",
+    "undo": "vissza",
+    "redo": "újra",
+    "cut": "kivágás",
     "copy": "Másolás", //this is a verb (as in "copy the currently-selected text")
     "paste": "Beillesztés",
+    "pasteAndMatchStyle": null, //missing translation
     "goBack": "Vissza lépés",
     "goForward": "Előre lépés",
     "inspectElement": "Részletek megtekintése",
+    "translatePage": null, // missing translation
     /* searchbar */
-    "pasteAndGo": null, //missing translation
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
+    "pasteAndGo": "Beillesztés és keresés",
     "DDGAnswerSubtitle": "Válasz", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Ajánlott oldal", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Válaszok a DuckDuckGo-ról", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Feladat %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": null, //missing translation
     "viewSettings": "Beállítások megtekintése",
     "takeScreenshot": "Képernyőkép készitése",
     "clearHistory": "Összes történet törlés",
-    "enableBlocking": null, //missing translation
-    "disableBlocking": null, //missing translation
+    "enableBlocking": "Blokkolás engedélyezése",
+    "disableBlocking": "Blokkolás kikapcsolása",
     "clearHistoryConfirmation": null, //missing translation
     "switchToTask": "Feladat váltása",
     "createTask": "Feladat létrehozás",
-    "closeTask": null, //missing translation
+    "closeTask": "Feladat befejezése",
     "moveToTask": "Tedd a fület feladatba",
     "nameTask": null, //missing translation
     "addBookmark": null, //missing translation
     "searchBookmarks": "Könyvjelző keresés",
     "bookmarksAddTag": null, //missing translation
+    "bookmarksRenameTag": null, //missing translation
+    "bookmarksDeleteTag": null, //missing translation
+    "deleteBookmarksWithTag": null, //missing translation
     "bookmarksSimilarItems": null, //missing translation
     "searchHistory": "Keresési előzmények",
     "importBookmarks": null, //missing translation
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "A Min nem tudott kapcsolódni biztonságosan az oldalhoz. Kérem ellenőrizze a számitógép óra beállítását.",
     "addressInvalidTitle": "A cím hibás.",
     "genericError": "Hiba lépett fel",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Ez az oldal ártalmas lehet.",
-    "phishingErrorMessage": "Ez az oldal személjes adatokat próbál lopni, mint. pl. a jelszavakat, vagy bankolási információkat.",
-    "phishingErrorVisitAnyway": "Megtekintés és oldal betöltése",
-    "phishingErrorLeave": "Hadja el az oldalt",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Hiba lépett fel, kérlek zárd be az összes böngészőt ablakot, és indítsd újra a Min böngészőt",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": null //missing translation
     },
-    "settingsCustomBangs": null, // missing translation
-    "settingsCustomBangsAdd": null, // missing translation
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": null, // missing translation
     "settingsCustomBangsSnippet": null, // missing translation
     "settingsCustomBangsRedirect": null, // missing translation
@@ -154,13 +157,22 @@
     "settingsAdditionalFeaturesHeading": "További beállítások",
     "settingsUserscriptsToggle": "Felhasználói szkriptek",
     "settingsShowDividerToggle": null, // Missing translation
+    "settingsLanguageSelection": null, //missing translation
     "settingsSeparateTitlebarToggle": null, //missing translation
     "settingsAutoplayToggle": null, //missing translation 
     "settingsOpenTabsInForegroundToggle": null, //missing translation
     "settingsUserscriptsExplanation": "Felhasználói szkript magyarázat",
+    "settingsUserscriptShowDirectory": null, //missing translation,
     "settingsUserAgentToggle": null, //missing translation
     "settingsUpdateNotificationsToggle": null, //missing translation
     "settingsUsageStatisticsToggle": null, //missing translation
+    "settingsStartupOptions": null, //missing translation
+    "settingsStartupCreateTask": null, //missing translation
+    "settingsStartupNewTaskandBackground": null, //missing translation
+    "settingsStartupNewTaskOnly": null, //missing translation
+    "settingsNewWindowOptions": null, //missing translation
+    "settingsNewWindowCreateTask": null, //missing translation
+    "settingsNewWindowPickTask": null, //missing translation
     "settingsSearchEngineHeading": "Keresőmotor",
     "settingsDefaultSearchEngine": "Válasza ki az alap keresőmotort:",
     "settingsDDGExplanation": "Állitsa be a DuckDuckGo keresőmotort, hogy lássa a válaszokat a keresősorban.",
@@ -180,6 +192,7 @@
     "appMenuDuplicateTab": "Fül duplikálása",
     "appMenuNewPrivateTab": "Új privát fül",
     "appMenuNewTask": "Új feladat",
+    "appMenuNewWindow": null, //missing translation
     "appMenuSavePageAs": "Oldal mentése másként",
     "appMenuPrint": "Nyomtatás",
     "appMenuEdit": "Szerkeszt",
@@ -188,6 +201,7 @@
     "appMenuCut": "Kivágás",
     "appMenuCopy": "Másolás",
     "appMenuPaste": "Beillesztés",
+    "appMenuPasteAndMatchStyle": null, //missing translation
     "appMenuSelectAll": "Mindent kiválaszt",
     "appMenuFind": "Keresés",
     "appMenuView": "Nézet",
@@ -219,7 +233,11 @@
     "appMenuShowAll": "Mindent mutat",
     "appMenuQuit": "Kilépés %n",
     "appMenuBringToFront": "Mindent előtérbe hoz",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": null, //missing translation
     "PDFPageCounter": {
       "unsafeHTML": "oldal <input type='text'/> ből <span id='total'></span>"
     },
@@ -263,6 +281,7 @@
     "passwordCaptureSave": null, //missing translation
     "passwordCaptureDontSave": null, //missing translation
     "passwordCaptureNeverSave": null, //missing translation
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": null, //missing translation
     "savedPasswordsEmpty": null, //missing translation

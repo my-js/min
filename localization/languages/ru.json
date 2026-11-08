@@ -23,16 +23,21 @@
     "cut": "Вырезать",
     "copy": "Копировать", //this is a verb (as in "copy the currently-selected text")
     "paste": "Вставить",
+    "pasteAndMatchStyle": "Вставить в текущем стиле",
     "goBack": "Назад",
     "goForward": "Вперёд",
     "inspectElement": "Инспектировать элемент",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "Вставить и перейти",
     "DDGAnswerSubtitle": "Ответ", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Предложенный сайт", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Результаты из DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Задача %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Показать больше",
@@ -50,6 +55,9 @@
     "addBookmark": "Добавить закладку",
     "searchBookmarks": "Искать в закладках",
     "bookmarksAddTag": "Добавить тег",
+    "bookmarksRenameTag": "Переименовать тег",
+    "bookmarksDeleteTag": "Удалить тег",
+    "deleteBookmarksWithTag": "Удалить закладки с тегом",
     "bookmarksSimilarItems": "Похожие",
     "searchHistory": "Искать в истории",
     "importBookmarks": "Импортировать закладки",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Min не смог безопасно соединиться с этим сайтом. Убедитесь, что ваши системные часы настроены правильно.",
     "addressInvalidTitle": "Некорректный адрес.",
     "genericError": "Произошла ошибка",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Этот сайт может вам навредить.",
-    "phishingErrorMessage": "Этот сайт может попытаться украсть ваши личные данные, такие как пароли и банковские данные.",
-    "phishingErrorVisitAnyway": "Все равно посетить сайт",
-    "phishingErrorLeave": "Уйти с сайта",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Произошла ошибка. Пожалуйста, закройте все другие открытые экземпляры и перезапустите Min.",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "На данный момент Min заблокировал <strong></strong> объявлений и трекеров"
     },
-    "settingsCustomBangs": "Пользовательские bangs",
-    "settingsCustomBangsAdd": "Добавить собственный bang",
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": "Фраза (обязательно)",
     "settingsCustomBangsSnippet": "Описание (необязательно)",
     "settingsCustomBangsRedirect": "URL перенаправления (обязательно)",
@@ -149,22 +152,31 @@
     "settingsDarkModeNever": "Нет",
     "settingsDarkModeNight": "Только ночью",
     "settingsDarkModeAlways": "Всегда",
-    "settingsDarkModeSystem": null,
+    "settingsDarkModeSystem": "Использовать системную тему",
     "settingsSiteThemeToggle": "Использовать тему сайта",
     "settingsAdditionalFeaturesHeading": "Дополнительные возможности",
     "settingsUserscriptsToggle": "Пользовательские скрипты",
     "settingsShowDividerToggle": "Показывать разделитель между вкладками",
+    "settingsLanguageSelection": "Язык: ",
     "settingsSeparateTitlebarToggle": "Использовать системный заголовок окна",
     "settingsAutoplayToggle": "Включить автоматическое воспроизведение",
     "settingsOpenTabsInForegroundToggle": "Открывать новые вкладки на переднем плане",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Пользовательские скрипты позволяют изменять поведение сайтов - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">узнать больше</a>."
     },
+    "settingsUserscriptShowDirectory": "Показать каталог скриптов",
     "settingsUserAgentToggle": "Использовать пользовательский user agent",
     "settingsUpdateNotificationsToggle": "Автоматически проверять наличие обновлений",
     "settingsUsageStatisticsToggle": {
       "unsafeHTML": "Отправлять статистику использования (<a href=\"https://github.com/minbrowser/min/blob/master/docs/statistics.md\">Подробнее</a>)"
     },
+    "settingsStartupOptions": "При запуске Min: ",
+    "settingsStartupCreateTask": "Открыть предыдущие вкладки",
+    "settingsStartupNewTaskandBackground": "Переместить предыдущие вкладки в фоновую задачу",
+    "settingsStartupNewTaskOnly": "Открыть новую пустую задачу",
+    "settingsNewWindowOptions": "В новых окнах: ",
+    "settingsNewWindowCreateTask": "Создать новую задачу",
+    "settingsNewWindowPickTask": "Показать список задач",
     "settingsSearchEngineHeading": "Поиск",
     "settingsDefaultSearchEngine": "Выберите поисковую систему по умолчанию:",
     "settingsDDGExplanation": "Чтобы видеть мгновенные ответы в строке поиска, установите DuckDuckGo поисковиком по умолчанию.",
@@ -184,6 +196,7 @@
     "appMenuDuplicateTab": "Дублировать",
     "appMenuNewPrivateTab": "Новая приватная вкладка",
     "appMenuNewTask": "Новая задача",
+    "appMenuNewWindow": "Новое окно",
     "appMenuSavePageAs": "Сохранить страницу как...",
     "appMenuPrint": "Печать",
     "appMenuEdit": "Правка",
@@ -192,6 +205,7 @@
     "appMenuCut": "Вырезать",
     "appMenuCopy": "Копировать",
     "appMenuPaste": "Вставить",
+    "appMenuPasteAndMatchStyle": "Вставить в текущем стиле",
     "appMenuSelectAll": "Выделить всё",
     "appMenuFind": "Найти",
     "appMenuView": "Вид",
@@ -223,7 +237,11 @@
     "appMenuShowAll": "Показать всё",
     "appMenuQuit": "Выйти из %n",
     "appMenuBringToFront": "Переместить всё на передний план",
+    /* Tab menu */
+    "tabMenuNewWindow": "Переместить вкладку в новое окно",
+    "tabMenuReload": "Перезагрузить",
     /* PDF Viewer */
+    "PDFInvertPage": "Инвертировать цвета страницы",
     "PDFPageCounter": {
       "unsafeHTML": "страница <input type='text'/> из <span id='total'></span>"
     },
@@ -260,7 +278,7 @@
     "passwordManagerSetupStep2": "Затем перетащите инструмент в поле ниже:",
     "passwordManagerSetupDragBox": "Перетащите инструмент сюда",
     "passwordManagerSetupInstalling": "Установка...",
-    "passwordManagerBitwardenSignIn": null, //missing translation
+    "passwordManagerBitwardenSignIn": "Чтобы подключить свою учетную запись Bitwarden, перейдите на страницу vault.bitwarden.com/#/settings/account, прокрутите вниз и выберите \"Показать ключ API\". Затем вставьте значения в поля ниже.",
     "passwordManagerSetupSignIn": "Войдите в свой менеджер паролей, чтобы начать использовать автозаполнение. Ваши учетные данные не будут храниться где-либо внутри Min.",
     "disableAutofill": "Отключить автозаполнение",
     "passwordManagerSetupUnlockError": "Не удалось разблокировать хранилище паролей: ",
@@ -271,13 +289,14 @@
     "passwordCaptureSave": "Сохранить",
     "passwordCaptureDontSave": "Не сохранять",
     "passwordCaptureNeverSave": "Никогда не сохранять",
+    "generatePassword": "Сгенерировать пароль",
     /* Password viewer */
     "savedPasswordsHeading": "Сохраненные пароли",
     "savedPasswordsEmpty": "Нет сохраненных паролей.",
     "savedPasswordsNeverSavedLabel": "Никогда не сохраняются",
     "deletePassword": "Удалить пароль для %s?",
     /* Dialogs */
-    "loginPromptTitle": "Войти на %s (%h)",
+    "loginPromptTitle": "Войти на %h",
     "dialogConfirmButton": "Подтвердить",
     "dialogSkipButton": "Отмена",
     "username": "Имя пользователя",

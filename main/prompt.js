@@ -10,7 +10,7 @@ function createPrompt (options, callback) {
   var promptWindow = new BrowserWindow({
     width: width,
     height: height,
-    parent: parent != null ? parent : mainWindow,
+    parent: parent != null ? parent : windows.getCurrent(),
     show: false,
     modal: true,
     alwaysOnTop: true,
@@ -18,9 +18,10 @@ function createPrompt (options, callback) {
     autoHideMenuBar: true,
     frame: false,
     webPreferences: {
-      nodeIntegration: true,
-      sandbox: false,
-      contextIsolation: false
+      nodeIntegration: false,
+      sandbox: true,
+      contextIsolation: true,
+      preload:  __dirname + '/pages/prompt/prompt.js'
     }
   })
 
@@ -30,7 +31,7 @@ function createPrompt (options, callback) {
   })
 
   // Load the HTML dialog box
-  promptWindow.loadURL('file://' + __dirname + '/pages/prompt/index.html')
+  promptWindow.loadURL('min://app/pages/prompt/index.html')
   promptWindow.once('ready-to-show', () => { promptWindow.show() })
 }
 

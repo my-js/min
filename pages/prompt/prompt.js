@@ -2,7 +2,7 @@ const { ipcRenderer } = require('electron')
 
 function cancel () {
   ipcRenderer.send('close-prompt', '')
-  this.close()
+  window.close()
 }
 
 function response () {
@@ -15,15 +15,17 @@ function response () {
   }
 
   ipcRenderer.send('close-prompt', values)
-  this.close()
+  window.close()
 }
 
-function handleKeyPress (event) {
-  var key = event.keyCode || event.which
-  if (key === 13) {
-    response()
+// flip the button order on mac
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (navigator.platform === 'MacIntel') {
+    document.getElementById('cancel').parentNode.insertBefore(document.getElementById('cancel'), document.getElementById('ok'))
   }
-}
+})
+
 
 window.addEventListener('load', function () {
   var options = ipcRenderer.sendSync('open-prompt', '')
@@ -69,7 +71,14 @@ window.addEventListener('load', function () {
   }
 
   if (darkMode === 1 || darkMode === true) { document.body.classList.add('dark-mode') }
-  document.getElementById('label').innerHTML = params.label
+  if (params.label) {
+    document.getElementById('label').textContent = params.label
+  } else {
+    document.getElementById('label').hidden = true
+  }
   document.getElementById('ok').value = okLabel
   document.getElementById('cancel').value = cancelLabel
+
+  document.getElementById('ok').addEventListener('click', response)
+  document.getElementById('cancel').addEventListener('click', cancel)
 })

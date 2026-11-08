@@ -37,7 +37,7 @@ var searchEngines = {
   Baidu: {
     name: 'Baidu',
     searchURL: 'https://www.baidu.com/s?wd=%s',
-    suggestionsURL: 'https://www.baidu.com/su?wd=%s&action=opensearch',
+    suggestionsURL: 'https://www.baidu.com/su?wd=%s&action=opensearch&ie=utf-8',
     queryParam: 'wd'
   },
   StartPage: {
@@ -69,6 +69,12 @@ var searchEngines = {
     searchURL: 'https://yandex.com/search/?text=%s',
     suggestionsURL: 'https://suggest.yandex.com/suggest-ff.cgi?part=%s',
     queryParam: 'text'
+  },
+  Brave: {
+    name: 'Brave',
+    searchURL: 'https://search.brave.com/search?q=%s',
+    suggestionsURL: 'https://search.brave.com/api/suggest?q=%s',
+    queryParam: 'q'
   },
   none: {
     name: 'none',

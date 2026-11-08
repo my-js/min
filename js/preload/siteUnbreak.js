@@ -20,7 +20,7 @@ if (process.isMainFrame) {
 `)
 }
 
-if ((window.location.hostname === 'google.com' || window.location.hostname.endsWith('.google.com')) && window.location.hostname !== 'hangouts.google.com') {
+if ((window.location.hostname === 'google.com' || window.location.hostname.endsWith('.google.com')) && window.location.hostname !== 'hangouts.google.com' && window.location.hostname !== 'drive.google.com') {
   /* define window.chrome
      this is necessary because some websites (such as the Google Drive file viewer, see issue #378) check for a
      Chrome user agent, and then do things like if(chrome.<module>) {}
@@ -30,6 +30,8 @@ if ((window.location.hostname === 'google.com' || window.location.hostname.endsW
      However, if window.chrome exists, hangouts will attempt to connect to an extension and break
      (https://github.com/minbrowser/min/issues/1051)
      so don't enable it there
+
+     As of 2/7/22, this also breaks drive, so disable it there also
      */
 
   scriptsToRun.push(`
@@ -96,26 +98,10 @@ if (window.location.hostname === 'calendar.google.com') {
   `)
 }
 
-/* Gmail - required for loading standard version (otherwise redirects to basic HTML) */
-
-if (window.location.hostname === 'mail.google.com') {
-  const chromiumVersion = process.versions.chrome.split('.')[0]
+/* meet.google.com - fix permission prompt for microphone and camera not appearing */
+if (window.location.hostname === 'meet.google.com') {
   scriptsToRun.push(`
-    (function() {
-      const simulatedUAData = {
-        brands: [
-          {brand: "Chromium", version: "${chromiumVersion}"},
-          {brand: "Not A;Brand", version: "99"}
-        ],
-        mobile: false,
-        getHighEntropyValues: function() {
-          console.warn('getHighEntropyValues is unimplemented', arguments)
-          return null
-        }
-      }
-
-      Object.defineProperty(navigator, 'userAgentData', {get: () => simulatedUAData})
-    })()
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
   `)
 }
 

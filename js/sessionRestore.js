@@ -2,11 +2,20 @@ var browserUI = require('browserUI.js')
 var webviews = require('webviews.js')
 var tabEditor = require('navbar/tabEditor.js')
 var tabState = require('tabState.js')
+var settings = require('util/settings/settings.js')
+var taskOverlay = require('taskOverlay/taskOverlay.js')
+const writeFileAtomic = require('write-file-atomic')
+const statistics = require('js/statistics.js')
 
 const sessionRestore = {
   savePath: window.globalArgs['user-data-path'] + (platformType === 'windows' ? '\\sessionRestore.json' : '/sessionRestore.json'),
   previousState: null,
   save: function (forceSave, sync) {
+    //only one window (the focused one) should be responsible for saving session restore data
+    if (!document.body.classList.contains('focused')) {
+      return
+    }
+
     var stateString = JSON.stringify(tasks.getStringifyableState())
     var data = {
       version: 2,
@@ -22,26 +31,43 @@ const sessionRestore = {
       })
     }
 
+    //if startupTabOption is "open a new blank task", don't save any tabs in the current task
+    if (settings.get('startupTabOption') === 3) {
+      for (var i = 0; i < data.state.tasks.length; i++) {
+        if (tasks.get(data.state.tasks[i].id).selectedInWindow) { //need to re-fetch the task because temporary properties have been removed
+          data.state.tasks[i].tabs = []
+        }
+      }
+    }
+
     if (forceSave === true || stateString !== sessionRestore.previousState) {
       if (sync === true) {
-        fs.writeFileSync(sessionRestore.savePath, JSON.stringify(data))
+        writeFileAtomic.sync(sessionRestore.savePath, JSON.stringify(data), {})
       } else {
-        fs.writeFile(sessionRestore.savePath, JSON.stringify(data), function (err) {
+        writeFileAtomic(sessionRestore.savePath, JSON.stringify(data), {}, function (err) {
           if (err) {
             console.warn(err)
+            statistics.incrementValue('sessionRestoreSaveAsyncWriteErrors')
           }
         })
       }
       sessionRestore.previousState = stateString
     }
   },
-  restore: function () {
+  restoreFromFile: function () {
     var savedStringData
     try {
       savedStringData = fs.readFileSync(sessionRestore.savePath, 'utf-8')
     } catch (e) {
       console.warn('failed to read session restore data', e)
     }
+
+    var startupConfigOption = settings.get('startupTabOption') || 2
+    /*
+    1 - reopen last task
+    2 - open new task, keep old tabs in background
+    3 - discard old tabs and open new task
+    */
 
     /*
     Disabled - show a user survey on startup
@@ -59,10 +85,10 @@ const sessionRestore = {
         tasks.setSelected(tasks.add()) // create a new task
 
         var newTab = tasks.getSelected().tabs.add({
-          url: 'https://minbrowser.github.io/min/tour'
+            url: 'https://minbrowser.github.io/min/tour'
         })
         browserUI.addTab(newTab, {
-          enterEditMode: false
+         enterEditMode: false
         })
         return
       }
@@ -90,12 +116,18 @@ const sessionRestore = {
           tasks.get(task.id).tabs.add()
         }
       })
-      tasks.setSelected(data.state.selectedTask)
+
+      var mostRecentTasks = tasks.slice().sort((a, b) => {
+        return tasks.getLastActivity(b.id) - tasks.getLastActivity(a.id)
+      })
+      if (mostRecentTasks.length > 0) {
+        tasks.setSelected(mostRecentTasks[0].id)
+      }
 
       // switch to the previously selected tasks
 
-      if (tasks.getSelected().tabs.isEmpty() || (!data.saveTime || Date.now() - data.saveTime < 30000)) {
-        browserUI.switchToTask(data.state.selectedTask)
+      if (tasks.getSelected().tabs.isEmpty() || startupConfigOption === 1) {
+        browserUI.switchToTask(mostRecentTasks[0].id)
         if (tasks.getSelected().tabs.isEmpty()) {
           tabEditor.show(tasks.getSelected().tabs.getSelected())
         }
@@ -142,7 +174,7 @@ const sessionRestore = {
 
       var backupSavePath = require('path').join(window.globalArgs['user-data-path'], 'sessionRestoreBackup-' + Date.now() + '.json')
 
-      fs.writeFileSync(backupSavePath, savedStringData)
+      writeFileAtomic.sync(backupSavePath, savedStringData, {})
 
       // destroy any tabs that were created during the restore attempt
       tabState.initialize()
@@ -150,11 +182,50 @@ const sessionRestore = {
       // create a new tab with an explanation of what happened
       var newTask = tasks.add()
       var newSessionErrorTab = tasks.get(newTask).tabs.add({
-        url: 'file://' + __dirname + '/pages/sessionRestoreError/index.html?backupLoc=' + encodeURIComponent(backupSavePath)
+        url: 'min://app/pages/sessionRestoreError/index.html?backupLoc=' + encodeURIComponent(backupSavePath)
       })
 
       browserUI.switchToTask(newTask)
       browserUI.switchToTab(newSessionErrorTab)
+
+      statistics.incrementValue('sessionRestorationErrors')
+    }
+  },
+  syncWithWindow: function () {
+    const data = ipc.sendSync('request-tab-state')
+    console.log('got from window', data)
+
+    data.tasks.forEach(function (task) {
+      // restore the task item
+      tasks.add(task, undefined, false)
+    })
+
+    if (Object.hasOwn(window.globalArgs, 'initial-task')) {
+      browserUI.switchToTask(window.globalArgs['initial-task'])
+      return
+    }
+
+    // reuse an existing task or create a new task in this window
+    // same as windowSync.js
+    var newTaskCandidates = tasks.filter(task => task.tabs.isEmpty() && !task.selectedInWindow && !task.name)
+      .sort((a, b) => {
+        return tasks.getLastActivity(b.id) - tasks.getLastActivity(a.id)
+      })
+    if (newTaskCandidates.length > 0) {
+      browserUI.switchToTask(newTaskCandidates[0].id)
+      tabEditor.show(tasks.getSelected().tabs.getSelected())
+    } else {
+      browserUI.addTask()
+    }
+  },
+  restore: function () {
+    if (Object.hasOwn(window.globalArgs, 'initial-window')) {
+      sessionRestore.restoreFromFile()
+    } else {
+      sessionRestore.syncWithWindow()
+    }
+    if (settings.get('newWindowOption') === 2 && !Object.hasOwn(window.globalArgs, 'launch-window') && !Object.hasOwn(window.globalArgs, 'initial-task')) {
+      taskOverlay.show()
     }
   },
   initialize: function () {
@@ -162,7 +233,16 @@ const sessionRestore = {
 
     window.onbeforeunload = function (e) {
       sessionRestore.save(true, true)
+      //workaround for notifying the other windows that the task open in this window isn't open anymore.
+      //This should ideally be done in windowSync, but it needs to run synchronously, which windowSync doesn't
+      ipc.send('tab-state-change', [
+        ['task-updated', tasks.getSelected().id, 'selectedInWindow', null]
+      ])
     }
+
+    ipc.on('read-tab-state', function (e) {
+      ipc.send('return-tab-state', tasks.getCopyableState())
+    })
   }
 }
 

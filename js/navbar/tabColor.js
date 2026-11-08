@@ -2,6 +2,7 @@ var webviews = require('webviews.js')
 var settings = require('util/settings/settings.js')
 
 const colorExtractorImage = document.createElement('img')
+colorExtractorImage.crossOrigin = 'anonymous'
 const colorExtractorCanvas = document.createElement('canvas')
 const colorExtractorContext = colorExtractorCanvas.getContext('2d')
 
@@ -10,7 +11,7 @@ const textColorNN = require('ext/textColor/textColor.js')
 const defaultColors = {
   private: ['rgb(58, 44, 99)', 'white'],
   lightMode: ['rgb(255, 255, 255)', 'black'],
-  darkMode: ['rgb(40, 44, 52)', 'white']
+  darkMode: ['rgb(33, 37, 43)', 'white']
 }
 
 function getHours () {
@@ -153,6 +154,9 @@ function getLuminance (c) {
 }
 
 function setColor (bg, fg, isLowContrast) {
+  document.body.style.setProperty('--theme-background-color', bg)
+  document.body.style.setProperty('--theme-foreground-color', fg)
+
   const backgroundElements = document.getElementsByClassName('theme-background-color')
   const textElements = document.getElementsByClassName('theme-text-color')
 

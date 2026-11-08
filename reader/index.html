@@ -2,9 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'" />
+
     <meta name="theme-color" id="meta-theme" />
     <script src="../ext/readability-master/Readability.js"></script>
     <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../pages/settingsDropdown.css"/>
     <link rel="stylesheet" href="readerUI.css" />
     <link rel="stylesheet" href="../ext/icons/iconfont.css" />
   </head>
@@ -16,7 +19,7 @@
       data-label="buttonReaderSettings"
     ></button>
     <div id="settings-dropdown" hidden>
-      <div class="setting-section">
+      <div class="setting-section theme-circles">
         <button
           class="theme-circle selected"
           data-theme="light"
@@ -45,13 +48,14 @@
       <label data-string="autoRedirectBannerReader"></label>
       <span id="auto-redirect-button-area">
         <button
-          id="auto-redirect-yes"
-          data-string="buttonReaderRedirectYes"
-        ></button>
-        <button
           id="auto-redirect-no"
           data-string="buttonReaderRedirectNo"
         ></button>
+        <button
+        id="auto-redirect-yes"
+        data-string="buttonReaderRedirectYes"
+        class="primary"
+      ></button>
       </span>
     </div>
     <div id="backtoarticle">

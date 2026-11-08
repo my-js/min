@@ -1,6 +1,8 @@
 function buildAppMenu (options = {}) {
+  const keyMap = userKeyMap(settings.get('keyMap'))
+
   function getFormattedKeyMapEntry (keybinding) {
-    const value = settings.get('keyMap')?.[keybinding]
+    const value = keyMap[keybinding]
 
     if (value) {
       if (Array.isArray(value)) {
@@ -17,7 +19,7 @@ function buildAppMenu (options = {}) {
   var tabTaskActions = [
     {
       label: l('appMenuNewTab'),
-      accelerator: getFormattedKeyMapEntry('addTab') || 'CmdOrCtrl+t',
+      accelerator: getFormattedKeyMapEntry('addTab'),
       click: function (item, window, event) {
         // keyboard shortcuts for these items are handled in the renderer
         if (!event.triggeredByAccelerator) {
@@ -26,17 +28,8 @@ function buildAppMenu (options = {}) {
       }
     },
     {
-      label: l('appMenuDuplicateTab'),
-      accelerator: getFormattedKeyMapEntry('duplicateTab') || 'shift+CmdOrCtrl+d',
-      click: function (item, window, event) {
-        if (!event.triggeredByAccelerator) {
-          sendIPCToWindow(window, 'duplicateTab')
-        }
-      }
-    },
-    {
       label: l('appMenuNewPrivateTab'),
-      accelerator: getFormattedKeyMapEntry('addPrivateTab') || 'shift+CmdOrCtrl+p',
+      accelerator: getFormattedKeyMapEntry('addPrivateTab'),
       click: function (item, window, event) {
         if (!event.triggeredByAccelerator) {
           sendIPCToWindow(window, 'addPrivateTab')
@@ -45,10 +38,21 @@ function buildAppMenu (options = {}) {
     },
     {
       label: l('appMenuNewTask'),
-      accelerator: getFormattedKeyMapEntry('addTask') || 'CmdOrCtrl+n',
+      accelerator: getFormattedKeyMapEntry('addTask'),
       click: function (item, window, event) {
         if (!event.triggeredByAccelerator) {
           sendIPCToWindow(window, 'addTask')
+        }
+      }
+    },
+    {
+      label: l('appMenuNewWindow'),
+      accelerator: getFormattedKeyMapEntry('addWindow'),
+      click: function () {
+        if (isFocusMode) {
+          showFocusModeDialog2()
+        } else {
+          createWindow()
         }
       }
     }
@@ -57,7 +61,7 @@ function buildAppMenu (options = {}) {
   var personalDataItems = [
     {
       label: l('appMenuBookmarks'),
-      accelerator: getFormattedKeyMapEntry('showBookmarks') || 'CmdOrCtrl+b',
+      accelerator: getFormattedKeyMapEntry('showBookmarks'),
       click: function (item, window, event) {
         if (!event.triggeredByAccelerator) {
           sendIPCToWindow(window, 'showBookmarks')
@@ -66,7 +70,7 @@ function buildAppMenu (options = {}) {
     },
     {
       label: l('appMenuHistory'),
-      accelerator: getFormattedKeyMapEntry('showHistory') || 'Shift+CmdOrCtrl+h',
+      accelerator: getFormattedKeyMapEntry('showHistory'),
       click: function (item, window, event) {
         if (!event.triggeredByAccelerator) {
           sendIPCToWindow(window, 'showHistory')
@@ -77,7 +81,7 @@ function buildAppMenu (options = {}) {
 
   var quitAction = {
     label: l('appMenuQuit').replace('%n', app.name),
-    accelerator: getFormattedKeyMapEntry('quitMin') || 'CmdOrCtrl+Q',
+    accelerator: getFormattedKeyMapEntry('quitMin'),
     click: function (item, window, event) {
       if (!event.triggeredByAccelerator) {
         app.quit()
@@ -90,7 +94,7 @@ function buildAppMenu (options = {}) {
     accelerator: 'CmdOrCtrl+,',
     click: function (item, window) {
       sendIPCToWindow(window, 'addTab', {
-        url: 'file://' + __dirname + '/pages/settings/index.html'
+        url: 'min://app/pages/settings/index.html'
       })
     }
   }
@@ -202,6 +206,11 @@ function buildAppMenu (options = {}) {
           role: 'paste'
         },
         {
+          label: l('appMenuPasteAndMatchStyle'),
+          accelerator: 'Shift+CmdOrCtrl+V',
+          role: 'pasteAndMatchStyle'
+        },
+        {
           label: l('appMenuSelectAll'),
           accelerator: 'CmdOrCtrl+A',
           role: 'selectall'
@@ -232,12 +241,39 @@ function buildAppMenu (options = {}) {
             sendIPCToWindow(window, 'zoomIn')
           }
         },
+        // Hidden item to enable shortcut on keyboards where = is on a different physical key than +
+        {
+          label: l('appMenuZoomIn'),
+          accelerator: 'CmdOrCtrl+=',
+          click: function (item, window) {
+            sendIPCToWindow(window, 'zoomIn')
+          },
+          visible: false
+        },
         {
           label: l('appMenuZoomOut'),
           accelerator: 'CmdOrCtrl+-',
           click: function (item, window) {
             sendIPCToWindow(window, 'zoomOut')
           }
+        },
+        // Hidden item to enable shortcut on numpad
+        {
+          label: l('appMenuZoomIn'),
+          accelerator: 'CmdOrCtrl+numadd',
+          click: function (item, window) {
+            sendIPCToWindow(window, 'zoomIn')
+          },
+          visible: false
+        },
+        // Hidden item to enable shortcut on numpad
+        {
+          label: l('appMenuZoomOut'),
+          accelerator: 'CmdOrCtrl+numsub',
+          click: function (item, window) {
+            sendIPCToWindow(window, 'zoomOut')
+          },
+          visible: false
         },
         {
           label: l('appMenuActualSize'),
@@ -257,10 +293,15 @@ function buildAppMenu (options = {}) {
           click: function (item, window) {
             if (isFocusMode) {
               isFocusMode = false
-              sendIPCToWindow(window, 'exitFocusMode')
+              windows.getAll().forEach(win => sendIPCToWindow(win, 'exitFocusMode'))
             } else {
               isFocusMode = true
-              sendIPCToWindow(window, 'enterFocusMode')
+              windows.getAll().forEach(win => sendIPCToWindow(win, 'enterFocusMode'))
+
+              // wait to show the message until the tabs have been hidden, to make the message less confusing
+              setTimeout(function() {
+                showFocusModeDialog1()
+              }, 16);
             }
           }
         },
@@ -285,28 +326,45 @@ function buildAppMenu (options = {}) {
             sendIPCToWindow(window, 'inspectPage')
           }
         },
+        // this is defined a second time (but hidden) in order to provide two keyboard shortcuts
         {
-          type: 'separator'
+          label: l('appMenuInspectPage'),
+          visible: false,
+          accelerator: 'f12',
+          click: function (item, window) {
+            sendIPCToWindow(window, 'inspectPage')
+          }
         },
-        {
-          label: l('appMenuReloadBrowser'),
-          accelerator: undefined,
-          click: function (item, focusedWindow) {
-            if (focusedWindow) {
-              destroyAllViews()
-              focusedWindow.reload()
+        ...(isDevelopmentMode || isDebuggingEnabled ?
+          [
+            {
+              type: 'separator'
+            },
+            {
+              label: l('appMenuReloadBrowser'),
+              accelerator: (isDevelopmentMode ? 'alt+CmdOrCtrl+R' : undefined),
+              click: function (item, focusedWindow) {
+                destroyAllViews()
+                windows.getAll().forEach(win => win.close())
+                createWindow()
+              }
+            },
+            {
+              label: l('appMenuInspectBrowser'),
+              accelerator: (function () {
+                if (process.platform === 'darwin') { return 'Shift+Cmd+Alt+I' } else { return 'Ctrl+Shift+Alt+I' }
+              })(),
+              click: function (item, focusedWindow) {
+                if (focusedWindow) getWindowWebContents(focusedWindow).toggleDevTools()
+              }
+            },
+            {
+              label: 'Inspect Places Service',
+              click: function (item, focusedWindow) {
+                placesWindow.webContents.openDevTools({ mode: 'detach' })
+              }
             }
-          }
-        },
-        {
-          label: l('appMenuInspectBrowser'),
-          accelerator: (function () {
-            if (process.platform === 'darwin') { return 'Shift+Cmd+Alt+I' } else { return 'Ctrl+Shift+Alt+I' }
-          })(),
-          click: function (item, focusedWindow) {
-            if (focusedWindow) focusedWindow.toggleDevTools()
-          }
-        }
+          ] : [])
       ]
     },
     ...(process.platform === 'darwin' ? [
@@ -323,7 +381,7 @@ function buildAppMenu (options = {}) {
             label: l('appMenuClose'),
             accelerator: 'CmdOrCtrl+W',
             click: function (item, window) {
-              if (mainWindow && !mainWindow.isFocused()) {
+              if (windows.getAll().length > 0 && !windows.getAll().some(win => win.isFocused())) {
                 // a devtools window is focused, close it
                 var contents = webContents.getAllWebContents()
                 for (var i = 0; i < contents.length; i++) {
@@ -341,9 +399,9 @@ function buildAppMenu (options = {}) {
             type: 'checkbox',
             checked: settings.get('windowAlwaysOnTop') || false,
             click: function (item, window) {
-              if (mainWindow) {
-                mainWindow.setAlwaysOnTop(item.checked)
-              }
+              windows.getAll().forEach(function(win) {
+                win.setAlwaysOnTop(item.checked)
+              })
               settings.set('windowAlwaysOnTop', item.checked)
             }
           },
@@ -431,6 +489,16 @@ function createDockMenu () {
         label: l('appMenuNewTask'),
         click: function (item, window) {
           sendIPCToWindow(window, 'addTask')
+        }
+      },
+      {
+        label: l('appMenuNewWindow'),
+        click: function () {
+          if (isFocusMode) {
+            showFocusModeDialog2()
+          } else {
+            createWindow()
+          }
         }
       }
     ]

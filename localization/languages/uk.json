@@ -23,16 +23,21 @@
     "cut": "Вирізати",
     "copy": "Копіювати", //this is a verb (as in "copy the currently-selected text")
     "paste": "Вставити",
+    "pasteAndMatchStyle": "Вставити в поточному стилі",
     "goBack": "Назад",
     "goForward": "Вперед",
     "inspectElement": "Дослідити елемент",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "Вставити та перейти",
     "DDGAnswerSubtitle": "Відповідь", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Запропонований сайт", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Результати із DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Завдання %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Показати більше",
@@ -50,6 +55,9 @@
     "addBookmark": "Додати закладку",
     "searchBookmarks": "Шукати в закладках",
     "bookmarksAddTag": "Додати мітку...",
+    "bookmarksRenameTag": "Перейменувати мітку",
+    "bookmarksDeleteTag": "Видалити мітку",
+    "deleteBookmarksWithTag": "Видалити закладки з міткою",
     "bookmarksSimilarItems": "Подібні елементи",
     "searchHistory": "Шукати в історії",
     "importBookmarks": "Імпортувати закладки",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Мін не може надійно підключитися до цього веб-сайту. Переконайтеся, що годинник комп'ютера встановлено правильно.",
     "addressInvalidTitle": "Недійсна адреса.",
     "genericError": "Виникла помилка",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Цей сайт може вам зашкодити.",
-    "phishingErrorMessage": "Цей веб-сайт може намагатися викрасти вашу особисту інформацію, наприклад, паролі чи банківську інформацію.",
-    "phishingErrorVisitAnyway": "Все одно відвідати сайт",
-    "phishingErrorLeave": "Залишити цей сайт",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Виникла помилка. Закрийте інші відкриті екземпляри та перезапустіть Min.",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "Наразі Min заблокував <strong></strong> реклам і трекерів."
     },
-    "settingsCustomBangs": "Власні bangs",
-    "settingsCustomBangsAdd": "Додати власний bang",
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": "Фраза (обов'язково)",
     "settingsCustomBangsSnippet": "Опис (необов'язково)",
     "settingsCustomBangsRedirect": "URL перенаправлення (обов'язково)",
@@ -150,22 +153,31 @@
     "settingsDarkModeNever": "Ніколи",
     "settingsDarkModeNight": "Вночі",
     "settingsDarkModeAlways": "Завжди",
-    "settingsDarkModeSystem": null,
+    "settingsDarkModeSystem": "Дотримуватися системної теми",
     "settingsSiteThemeToggle": "Увімкнути тему сайту",
     "settingsAdditionalFeaturesHeading": "Додаткові можливості",
     "settingsUserscriptsToggle": "Увімкнути скрипти користувача",
     "settingsShowDividerToggle": "Показувати роздільник між вкладками",
+    "settingsLanguageSelection": "Мова: ",
     "settingsSeparateTitlebarToggle": "Використовувати окремий рядок заголовка",
     "settingsAutoplayToggle": "Увімкнути автовідтворення",
     "settingsOpenTabsInForegroundToggle": "Відкривати нові вкладки на передньому плані",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Скрипти користувача дозволяють змінювати поведінку веб-сайтів - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">дізнатися більше</a>."
     },
+    "settingsUserscriptShowDirectory": "Показати каталог скриптів",
     "settingsUserAgentToggle": "Використовувати власний агент користувача",
     "settingsUpdateNotificationsToggle": "Автоматично перевіряти наявність оновлень",
     "settingsUsageStatisticsToggle": {
       "unsafeHTML": "Надсилати статистику використання (<a href=\"https://github.com/minbrowser/min/blob/master/docs/statistics.md\">Детальніше</a>)"
     },
+    "settingsStartupOptions": "При запуску Min: ",
+    "settingsStartupCreateTask": "Відкрити попередні вкладки",
+    "settingsStartupNewTaskandBackground": "Перемістити попередні вкладки до фонового завдання",
+    "settingsStartupNewTaskOnly": "Відкрити нове порожнє завдання",
+    "settingsNewWindowOptions": "В нових вікнах: ",
+    "settingsNewWindowCreateTask": "Створити нове завдання",
+    "settingsNewWindowPickTask": "Показати список завдань",
     "settingsSearchEngineHeading": "Пошукова система",
     "settingsDefaultSearchEngine": "Виберіть типову пошукову систему:",
     "settingsDDGExplanation": "Встановіть DuckDuckGo як типову пошукову систему, щоб побачити миттєві відповіді на панелі пошуку.",
@@ -185,6 +197,7 @@
     "appMenuDuplicateTab": "Дублювати вкладку",
     "appMenuNewPrivateTab": "Нова приватна вкладка",
     "appMenuNewTask": "Нове завдання",
+    "appMenuNewWindow": "Нове вікно",
     "appMenuSavePageAs": "Зберегти сторінку як",
     "appMenuPrint": "Друк",
     "appMenuEdit": "Редагувати",
@@ -193,6 +206,7 @@
     "appMenuCut": "Вирізати",
     "appMenuCopy": "Копіювати",
     "appMenuPaste": "Вставити",
+    "appMenuPasteAndMatchStyle": "Вставити в поточному стилі",
     "appMenuSelectAll": "Вибрати все",
     "appMenuFind": "Знайти",
     "appMenuView": "Вигляд",
@@ -224,7 +238,11 @@
     "appMenuShowAll": "Показати все",
     "appMenuQuit": "Вийти з %n",
     "appMenuBringToFront": "Все на передній план",
+    /* Tab menu */
+    "tabMenuNewWindow": "Перемістити вкладку в нове вікно",
+    "tabMenuReload": "Перезавантажити",
     /* PDF Viewer */
+    "PDFInvertPage": "Інвертувати кольори сторінки",
     "PDFPageCounter": {
       "unsafeHTML": "сторінка <input type='text'/> з <span id='total'></span>"
     },
@@ -261,7 +279,7 @@
     "passwordManagerSetupStep2": "Потім перетягніть інструмент у поле нижче:",
     "passwordManagerSetupDragBox": "Перетягніть інструмент сюди",
     "passwordManagerSetupInstalling": "Встановлення...",
-    "passwordManagerBitwardenSignIn": null, //missing translation
+    "passwordManagerBitwardenSignIn": "Щоб підключити свій обліковий запис Bitwarden, перейдіть на сторінку vault.bitwarden.com/#/settings/account, прокрутіть униз і виберіть \"Переглянути ключ API\". Потім вставте значення в поля нижче.",
     "passwordManagerSetupSignIn": "Увійдіть до менеджера паролів, щоб почати використовувати автозаповнення. Ваші облікові дані не зберігатимуться ніде в межах Min.",
     "disableAutofill": "Вимкнути автозаповнення",
     "passwordManagerSetupUnlockError": "Не вдалося розблокувати сховище паролів: ",
@@ -272,13 +290,14 @@
     "passwordCaptureSave": "Зберегти",
     "passwordCaptureDontSave": "Не зберігати",
     "passwordCaptureNeverSave": "Ніколи не зберігати",
+    "generatePassword": "Згенерувати пароль",
     /* Password viewer */
     "savedPasswordsHeading": "Збережені паролі",
     "savedPasswordsEmpty": "Немає збережених паролів.",
     "savedPasswordsNeverSavedLabel": "Ніколи не зберігаються",
     "deletePassword": "Видалити пароль для %s?",
     /* Dialogs */
-    "loginPromptTitle": "Увійти на %h (%r)", //%h is replaced with host, %r with realm (title of protected part of site)
+    "loginPromptTitle": "Увійти на %h", //%h is replaced with host, %r with realm (title of protected part of site)
     "dialogConfirmButton": "Підтвердити",
     "dialogSkipButton": "Скасувати",
     "username": "Ім'я користувача",

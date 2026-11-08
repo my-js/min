@@ -8,7 +8,14 @@ backbutton.addEventListener('click', function (e) {
   // there's likely a problem with reader view on this page, so don't auto-redirect to it in the future
   readerDecision.setURLStatus(articleURL, false)
 
-  window.location = articleURL
+  /*
+  setURLStatus eventually calls settings.update asynchronously, and it's possible for the navigation to the original URL
+  to start before the settings data has finished updating, which makes the original URL redirect back to reader view.
+  Adding a small delay before loading the original URL avoids this.
+  */
+  setTimeout(function () {
+    window.location = articleURL
+  }, 50)
 })
 
 /* Auto redirect banner */
@@ -29,7 +36,7 @@ autoRedirectYes.addEventListener('click', function () {
 })
 autoRedirectNo.addEventListener('click', function () {
   readerDecision.setDomainStatus(articleURL, false)
-  autoRedirectBanner.hidden = false
+  autoRedirectBanner.hidden = true
 })
 
 /* Settings */
@@ -212,6 +219,14 @@ function startReaderView (article, date) {
     var readerDomain = articleLocation.hostname
 
     readerContent += "<div class='reader-main' domain='" + readerDomain + "'>" + "<h1 class='article-title'>" + (article.title || '') + '</h1>'
+
+    if (article.publishedTime) {
+      try {
+        date = new Intl.DateTimeFormat(navigator.language, { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(article.publishedTime))
+      } catch (e) {
+        console.warn(e)
+      }
+    }
 
     if (article.byline || date) {
       readerContent += "<h2 class='article-authors'>" + (article.byline ? article.byline : '') + (date ? ' (' + date + ')' : '') + '</h2>'

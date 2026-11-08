@@ -2,6 +2,33 @@ var urlParser = require('util/urlParser.js')
 
 var lastItemDeletion = Date.now() // TODO get rid of this
 
+function extractTokens (text, tokens) {
+  var remainingText = text
+  var out = []
+
+  var nextToken
+
+  while (nextToken?.index !== -1) {
+    nextToken = tokens.map(token => ({ token, index: remainingText.toLowerCase().indexOf(token) }))
+      .reduce((a, b) => {
+        if ((a.index <= b.index && a.index !== -1) || (b.index === -1)) {
+          return a
+        } else {
+          return b
+        }
+      })
+
+    if (nextToken.index !== -1) {
+      out.push(remainingText.substring(0, nextToken.index))
+      out.push({ token: remainingText.substring(nextToken.index, nextToken.index + nextToken.token.length) })
+      remainingText = remainingText.substring(nextToken.index + nextToken.token.length)
+    }
+  }
+  out.push(remainingText)
+
+  return out
+}
+
 // creates a result item
 
 /*
@@ -112,7 +139,19 @@ function createItem (data) {
     var dBlock = document.createElement('span')
     dBlock.classList.add('description-block')
 
-    dBlock.textContent = data.descriptionBlock
+    if (data.highlightedTerms) {
+      extractTokens(data.descriptionBlock, data.highlightedTerms).forEach(function (span) {
+        if (typeof span === 'string') {
+          dBlock.appendChild(document.createTextNode(span))
+        } else {
+          var s = document.createElement('strong')
+          s.textContent = span.token
+          dBlock.appendChild(s)
+        }
+      })
+    } else {
+      dBlock.textContent = data.descriptionBlock
+    }
     item.appendChild(dBlock)
   }
 
@@ -181,6 +220,44 @@ function createItem (data) {
     item.classList.add('has-action-button')
   }
 
+  if (data.textActionButtons) {
+    var buttonArea = document.createElement('div')
+    buttonArea.className = 'text-action-button-row'
+
+    data.textActionButtons.forEach(function (buttonEntry) {
+      var button = document.createElement('button')
+      button.className = 'action-button-horizontal'
+      if (buttonEntry.default) {
+        button.classList.add('ignores-keyboard-focus')
+        button.classList.add('default-action')
+      }
+      button.tabIndex = -1
+      if (buttonEntry.icon) {
+        var el = document.createElement('i')
+        el.className = 'i ' + buttonEntry.icon
+        button.appendChild(el)
+      }
+
+      button.appendChild(document.createTextNode(buttonEntry.text))
+
+      if (buttonEntry.fn) {
+        button.addEventListener('click', function (e) {
+          e.stopPropagation()
+          buttonEntry.fn.call(this, e)
+        })
+        button.addEventListener('keydown', function (e) {
+          if (e.keyCode === 13) {
+            button.click()
+            e.stopPropagation()
+          }
+        })
+      }
+      buttonArea.appendChild(button)
+    })
+
+    item.appendChild(buttonArea)
+  }
+
   if (data.click) {
     item.addEventListener('click', data.click)
   }
@@ -189,6 +266,7 @@ function createItem (data) {
     // return should act like click
     if (e.keyCode === 13) {
       item.click()
+      e.stopPropagation()
     }
   })
 

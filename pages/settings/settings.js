@@ -5,6 +5,7 @@ var banner = document.getElementById('restart-required-banner')
 var siteThemeCheckbox = document.getElementById('checkbox-site-theme')
 var showDividerCheckbox = document.getElementById('checkbox-show-divider')
 var userscriptsCheckbox = document.getElementById('checkbox-userscripts')
+var userscriptsShowDirectorySection = document.getElementById('userscripts-show-directory')
 var separateTitlebarCheckbox = document.getElementById('checkbox-separate-titlebar')
 var openTabsInForegroundCheckbox = document.getElementById('checkbox-open-tabs-in-foreground')
 var autoPlayCheckbox = document.getElementById('checkbox-enable-autoplay')
@@ -230,16 +231,46 @@ siteThemeCheckbox.addEventListener('change', function (e) {
   settings.set('siteTheme', this.checked)
 })
 
+/* startup settings */
+
+var startupSettingInput = document.getElementById('startup-options')
+
+settings.get('startupTabOption', function(value = 2) {
+  startupSettingInput.value = value
+})
+
+startupSettingInput.addEventListener('change', function() {
+  settings.set('startupTabOption', parseInt(this.value))
+})
+
+/* new window settings */
+
+var newWindowSettingInput = document.getElementById('new-window-options')
+
+settings.get('newWindowOption', function(value = 1) {
+  newWindowSettingInput.value = value
+})
+
+newWindowSettingInput.addEventListener('change', function() {
+  settings.set('newWindowOption', parseInt(this.value))
+})
+
 /* userscripts setting */
 
 settings.get('userscriptsEnabled', function (value) {
   if (value === true) {
     userscriptsCheckbox.checked = true
+    userscriptsShowDirectorySection.hidden = false
   }
 })
 
 userscriptsCheckbox.addEventListener('change', function (e) {
   settings.set('userscriptsEnabled', this.checked)
+  userscriptsShowDirectorySection.hidden = !this.checked
+})
+
+userscriptsShowDirectorySection.getElementsByTagName('a')[0].addEventListener('click', function() {
+  postMessage({ message: 'showUserscriptDirectory' })
 })
 
 /* show divider between tabs setting */
@@ -252,6 +283,24 @@ settings.get('showDividerBetweenTabs', function (value) {
 
 showDividerCheckbox.addEventListener('change', function (e) {
   settings.set('showDividerBetweenTabs', this.checked)
+})
+
+/* language setting*/
+
+var languagePicker = document.getElementById('setting-language-picker')
+
+for (var language in languages) { //from localization.build.js
+  var item = document.createElement('option')
+  item.textContent = languages[language].name
+  item.value = languages[language].identifier
+  languagePicker.appendChild(item)
+}
+
+languagePicker.value = getCurrentLanguage()
+
+languagePicker.addEventListener('change', function () {
+  settings.set('userSelectedLanguage', this.value)
+  showRestartRequiredBanner()
 })
 
 /* separate titlebar setting */
@@ -310,8 +359,12 @@ userAgentCheckbox.addEventListener('change', function (e) {
 })
 
 userAgentInput.addEventListener('input', function (e) {
-  if (this.value) {
-    settings.set('customUserAgent', this.value)
+  const value = this.value.slice(0, 200)
+  if (value !== this.value) {
+    this.value = value
+  }
+  if (value) {
+    settings.set('customUserAgent', value)
   } else {
     settings.set('customUserAgent', null)
   }
@@ -410,7 +463,7 @@ settings.get('keyMap', function (keyMapSettings) {
 })
 
 function formatCamelCase (text) {
-  var result = text.replace(/([A-Z])/g, ' $1')
+  var result = text.replace(/([a-z])([A-Z])/g, '$1 $2')
   return result.charAt(0).toUpperCase() + result.slice(1)
 }
 
@@ -444,6 +497,9 @@ function formatKeyValue (value) {
     value = value.replace(/\bmod\b/g, 'ctrl')
     value = value.replace(/\boption\b/g, 'alt')
   }
+  if (navigator.platform === 'Win32') {
+    value = value.replace(/\bsuper\b/g, 'win')
+  }
   return value
 }
 
@@ -460,6 +516,7 @@ function parseKeyInput (input) {
     } else {
       e = e.replace(/\b(control)|(ctrl)\b/g, 'mod')
       e = e.replace(/\balt\b/g, 'option')
+      e = e.replace(/\bwin\b/g, 'super')
     }
     return e
   })
@@ -556,7 +613,9 @@ settings.get('customBangs', (value) => {
 
 document.getElementById('add-custom-bang').addEventListener('click', function () {
   const bangslist = document.getElementById('custom-bangs')
-  bangslist.appendChild(createBang())
+  const newListItem = createBang()
+  bangslist.appendChild(newListItem)
+  document.body.scrollBy(0, Math.round(newListItem.getBoundingClientRect().height))
 })
 
 function createBang (bang, snippet, redirect) {

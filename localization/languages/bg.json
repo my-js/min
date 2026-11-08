@@ -23,16 +23,21 @@
     "cut": "Изрязване",
     "copy": "Копиране", //this is a verb (as in "copy the currently-selected text")
     "paste": "Поставяне",
+    "pasteAndMatchStyle": null, //missing translation
     "goBack": "Връщане една страница назад",
     "goForward": "Отиване една страница напред",
     "inspectElement": "Изследване на елемента",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "Поставяне и посещаване",
     "DDGAnswerSubtitle": "Отговор", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Предложен сайт", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Резултати от DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Задача %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Показване на повече",
@@ -50,6 +55,9 @@
     "addBookmark": "Отмятане на страница",
     "searchBookmarks": "Търсене на отметки",
     "bookmarksAddTag": "Добавяне на таг...",
+    "bookmarksRenameTag": null, //missing translation
+    "bookmarksDeleteTag": null, //missing translation
+    "deleteBookmarksWithTag": null, //missing translation
     "bookmarksSimilarItems": "Подобни елементи",
     "searchHistory": "История на търсенията",
     "importBookmarks": "Внасяне на отметки от HTML файл",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Min не успя да се свърже сигурно с този уеб сайт. Моля уверете се, че часовникът на Вашият компютър е настроен правилно.",
     "addressInvalidTitle": "Този адрес е невалиден.",
     "genericError": "Възникна грешка",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Този сайт може да Ви навреди.",
-    "phishingErrorMessage": "Този уеб сайт може да се опитва да открадне Вашата личната информация, като пароли или банкова информация.",
-    "phishingErrorVisitAnyway": "Продължаване въпреки риска",
-    "phishingErrorLeave": "Напускане на сайта",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Възникна грешка. Моля затворете всякакви други инстанции и рестартирайте Min.",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "Досега Min е блокирал <strong></strong> реклами и тракери."
     },
-    "settingsCustomBangs": null, // missing translation
-    "settingsCustomBangsAdd": null, // missing translation
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": null, // missing translation
     "settingsCustomBangsSnippet": null, // missing translation
     "settingsCustomBangsRedirect": null, // missing translation
@@ -153,15 +156,24 @@
     "settingsSiteThemeToggle": "Активиране на теми на сайтове",
     "settingsAdditionalFeaturesHeading": "Допълнителни функции",
     "settingsUserscriptsToggle": "Активиране на потребителски скриптове",
+    "settingsLanguageSelection": null, //missing translation
     "settingsSeparateTitlebarToggle": "Използване на отделна лента със заглавието",
     "settingsAutoplayToggle": null, //missing translation 
     "settingsOpenTabsInForegroundToggle": "Отваряне на нови раздели на преден план",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Потребителските скриптове Ви позволяват да промените поведението на уеб сайтове - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">научете повече</a>."
     },
+    "settingsUserscriptShowDirectory": null, //missing translation,
     "settingsUserAgentToggle": "Използване на персонализиран потребителски агент",
     "settingsUpdateNotificationsToggle": "Автоматично проверяване за актуализации",
     "settingsUsageStatisticsToggle": null, //missing translation
+    "settingsStartupOptions": null, //missing translation
+    "settingsStartupCreateTask": null, //missing translation
+    "settingsStartupNewTaskandBackground": null, //missing translation
+    "settingsStartupNewTaskOnly": null, //missing translation
+    "settingsNewWindowOptions": null, //missing translation
+    "settingsNewWindowCreateTask": null, //missing translation
+    "settingsNewWindowPickTask": null, //missing translation
     "settingsSearchEngineHeading": "Търсачки",
     "settingsDefaultSearchEngine": "Изберете търсачка по подразбиране:",
     "settingsDDGExplanation": "Поставете DuckDuckGo като търсачка по подразбиране, за да получавате моментални отговори в лентата за търсене.",
@@ -181,6 +193,7 @@
     "appMenuDuplicateTab": "Дупликиране на раздела",
     "appMenuNewPrivateTab": "Нов поверителен раздел",
     "appMenuNewTask": "Нова задача",
+    "appMenuNewWindow": null, //missing translation
     "appMenuSavePageAs": "Запазване на страницата като",
     "appMenuPrint": "Отпечатване",
     "appMenuEdit": "Редактиране",
@@ -189,6 +202,7 @@
     "appMenuCut": "Изрязване",
     "appMenuCopy": "Копиране",
     "appMenuPaste": "Поставяне",
+    "appMenuPasteAndMatchStyle": null, //missing translation
     "appMenuSelectAll": "Избиране на всичко",
     "appMenuFind": "Търсене",
     "appMenuView": "Изглед",
@@ -220,7 +234,11 @@
     "appMenuShowAll": "Покажи всички",
     "appMenuQuit": "Излизане от %n",
     "appMenuBringToFront": "Извеждане на всички отпред",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": null, //missing translation
     "PDFPageCounter": {
       "unsafeHTML": "страница <input type='text'/> от <span id='total'></span>"
     },
@@ -268,13 +286,14 @@
     "passwordCaptureSave": "Запази",
     "passwordCaptureDontSave": "Не запазвай",
     "passwordCaptureNeverSave": null, //missing translation
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": "Запазени пароли",
     "savedPasswordsEmpty": "Няма запазени пароли.",
     "savedPasswordsNeverSavedLabel": null, //missing translation
     "deletePassword": "Изтрий парола за %s?",
     /* Dialogs */
-    "loginPromptTitle": "Впишете се в %h (%r)", //%h is replaced with host, %r with realm (title of protected part of site)
+    "loginPromptTitle": "Впишете се в %h", //%h is replaced with host, %r with realm (title of protected part of site)
     "dialogConfirmButton": "Потвърждаване",
     "dialogSkipButton": "Отказване",
     "username": "Потребителско име",

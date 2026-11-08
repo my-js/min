@@ -10,6 +10,7 @@ const tabEditor = {
   container: document.getElementById('tab-editor'),
   input: document.getElementById('tab-editor-input'),
   star: null,
+  isShown: false,
   show: function (tabId, editingValue, showSearchbar) {
     /* Edit mode is not available in modal mode. */
     if (modalMode.enabled()) {
@@ -17,6 +18,7 @@ const tabEditor = {
     }
 
     tabEditor.container.hidden = false
+    tabEditor.isShown = true
 
     bookmarkStar.update(tabId, tabEditor.star)
     contentBlockingToggle.update(tabId, tabEditor.contentBlockingToggle)
@@ -71,6 +73,7 @@ const tabEditor = {
   hide: function () {
     tabEditor.container.hidden = true
     tabEditor.container.removeAttribute('style')
+    tabEditor.isShown = false
 
     tabEditor.input.blur()
     searchbar.hide()
@@ -90,43 +93,39 @@ const tabEditor = {
 
     keyboardNavigationHelper.addToGroup('searchbar', tabEditor.container)
 
-    // keypress doesn't fire on delete key - use keyup instead
-    tabEditor.input.addEventListener('keyup', function (e) {
-      if (e.keyCode === 8) {
-        searchbar.showResults(this.value, e)
+    tabEditor.input.addEventListener('input', function (e) {
+      if (e.isComposing) {
+        // This input will instead be handled during the compositionend event
+        return
       }
+
+      // handles all inputs except for the case where the selection is moved (since we call preventDefault() there)
+      searchbar.showResults(this.value, {
+        isDeletion: e.inputType.includes('delete')
+      })
+    })
+
+    tabEditor.input.addEventListener('compositionend', function (e) {
+      searchbar.showResults(this.value)
     })
 
     tabEditor.input.addEventListener('keypress', function (e) {
       if (e.keyCode === 13) { // return key pressed; update the url
-        if (this.getAttribute('data-autocomplete') && this.getAttribute('data-autocomplete').toLowerCase() === this.value.toLowerCase()) {
-          // special case: if the typed input is capitalized differently from the actual URL that was autocompleted (but is otherwise the same), then we want to open the actual URL instead of what was typed.
-          // see https://github.com/minbrowser/min/issues/314#issuecomment-276678613
-          searchbar.openURL(this.getAttribute('data-autocomplete'), e)
+        if (this.getAttribute('data-autocomplete-text') && this.getAttribute('data-autocomplete-text').toLowerCase() === this.value.toLowerCase()) {
+          // The original autocompletion can contain additional information, such as a protocol or different capitalization than what was typed
+          searchbar.openURL(this.getAttribute('data-autocomplete-ref') || this.getAttribute('data-autocomplete-text'), e)
         } else {
           searchbar.openURL(this.value, e)
         }
-      } else if (e.keyCode === 9) {
-        return
-        // tab key, do nothing - in keydown listener
-      } else if (e.keyCode === 16) {
-        return
-        // shift key, do nothing
-      } else if (e.keyCode === 8) {
-        return
-        // delete key is handled in keyUp
-      } else { // show the searchbar
-        searchbar.showResults(this.value, e)
+        e.preventDefault()
       }
 
       // on keydown, if the autocomplete result doesn't change, we move the selection instead of regenerating it to avoid race conditions with typing. Adapted from https://github.com/patrickburke/jquery.inlineComplete
 
-      var v = e.key
-      var sel = this.value.substring(this.selectionStart, this.selectionEnd).indexOf(v)
-
-      if (v && sel === 0) {
+      if (e.key && this.selectionEnd === this.value.length && this.value[this.selectionStart] === e.key) {
         this.selectionStart += 1
         e.preventDefault()
+        searchbar.showResults(this.value.substring(0, this.selectionStart), {})
       }
     })
 

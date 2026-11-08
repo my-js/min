@@ -33,6 +33,9 @@ function buildBrowser () {
     detectGlobals: false
   })
 
+  instance.exclude('chokidar')
+  instance.exclude('write-file-atomic')
+
   instance.transform(renderify)
   const stream = fs.createWriteStream(outFile, { encoding: 'utf-8' })
   instance.bundle()

@@ -17,7 +17,6 @@ function registerCustomBang (data) {
   customBangs.push({
     phrase: data.phrase,
     snippet: data.snippet,
-    score: data.score || 256000,
     icon: data.icon || 'carbon:terminal',
     showSuggestions: data.showSuggestions,
     fn: data.fn,
@@ -71,18 +70,17 @@ function incrementBangCount (bang) {
 }
 
 // results is an array of {phrase, snippet, image}
-function showBangSearchResults (text, results, input, event, limit = 5) {
+function showBangSearchResults (text, results, input, inputFlags, limit = 5) {
   searchbarPlugins.reset('bangs')
 
+  const allScores = results.map(result => result.score).filter(score => !!score)
+  const maxScore = allScores.length === 0 ? 0 : Math.max.apply(this, allScores)
+
   results.sort(function (a, b) {
-    var aScore = a.score || 1
-    var bScore = b.score || 1
-    if (bangUseCounts[a.phrase]) {
-      aScore *= bangUseCounts[a.phrase]
-    }
-    if (bangUseCounts[b.phrase]) {
-      bScore *= bangUseCounts[b.phrase]
-    }
+    var aScore = a.score || maxScore
+    var bScore = b.score || maxScore
+    aScore *= (bangUseCounts[a.phrase] || 0) + 1
+    bScore *= (bangUseCounts[b.phrase] || 0) + 1
 
     return bScore - aScore
   })
@@ -113,7 +111,7 @@ function showBangSearchResults (text, results, input, event, limit = 5) {
 
         // show search suggestions for custom bangs
         if (result.showSuggestions) {
-          result.showSuggestions('', input, event)
+          result.showSuggestions('', input, inputFlags)
         }
       }, 66)
     }
@@ -122,14 +120,14 @@ function showBangSearchResults (text, results, input, event, limit = 5) {
   })
 }
 
-function getBangSearchResults (text, input, event) {
+function getBangSearchResults (text, input, inputFlags) {
   // if there is a space in the text, show bang search suggestions (only supported for custom bangs)
 
   if (text.indexOf(' ') !== -1) {
     var bang = getCustomBang(text)
 
     if (bang && bang.showSuggestions) {
-      bang.showSuggestions(text.replace(bang.phrase, '').trimLeft(), input, event)
+      bang.showSuggestions(text.replace(bang.phrase, '').trimLeft(), input, inputFlags)
       return
     } else if (text.trim().indexOf(' ') !== -1) {
       searchbarPlugins.reset('bangs')
@@ -167,19 +165,19 @@ function getBangSearchResults (text, input, event) {
     }
     results = results.concat(searchCustomBangs(text))
     if (text === '!') {
-      showBangSearchResults(text, results, input, event)
+      showBangSearchResults(text, results, input, inputFlags)
       searchbarPlugins.addResult('bangs', {
         title: l('showMoreBangs'),
         icon: 'carbon:chevron-down',
         click: function () {
-          showBangSearchResults(text, results, input, event, Infinity)
+          showBangSearchResults(text, results, input, inputFlags, Infinity)
         }
       })
     } else {
-      showBangSearchResults(text, results, input, event)
+      showBangSearchResults(text, results, input, inputFlags)
 
-      if (results[0] && event.keyCode !== 8) {
-        searchbarAutocomplete.autocomplete(input, [results[0].phrase])
+      if (results[0] && !inputFlags.isDeletion) {
+        searchbarAutocomplete.autocomplete(input, [[results[0].phrase]])
       }
     }
   })
@@ -220,6 +218,8 @@ function initialize () {
       registerCustomBang({
         phrase: `!${bang.phrase}`,
         snippet: `${bang.snippet}` ?? '',
+        // isAction: true - skip search text entry if the bang does not include a search parameter
+        isAction: !bang.redirect.includes('%s'),
         fn: function (text) {
           searchbar.openURL(bang.redirect.replace('%s', encodeURIComponent(text)))
         }

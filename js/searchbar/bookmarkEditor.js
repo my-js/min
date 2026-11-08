@@ -1,6 +1,7 @@
-var { db } = require('util/database.js')
 var places = require('places/places.js')
 var autocomplete = require('util/autocomplete.js')
+const remoteMenu = require('remoteMenuRenderer.js')
+var { ipcRenderer } = require('electron')
 
 const bookmarkEditor = {
   currentInstance: null,
@@ -24,11 +25,80 @@ const bookmarkEditor = {
         el.classList.add('selected')
       }
     })
+    if (options.onModify) {
+      el.addEventListener('contextmenu', function () {
+        remoteMenu.open([
+          [
+            {
+              label: l('bookmarksRenameTag'),
+              click: async function () {
+                const res = ipcRenderer.sendSync('prompt', {
+                  text: '',
+                  values: [{ placeholder: l('bookmarksRenameTag'), id: 'name', type: 'text' }],
+                  ok: l('dialogConfirmButton'),
+                  cancel: l('dialogSkipButton'),
+                  width: 500,
+                  height: 140
+                })
+
+                if (!res || !res.name) {
+                  return
+                }
+
+                const newName = res.name
+
+                const items = await places.getAllItems()
+
+                items.forEach(function (item) {
+                  if (item.tags.includes(tag)) {
+                    item.tags = item.tags.filter(t => t !== tag)
+                    item.tags.push(newName)
+                    places.updateItem(item.url, { tags: item.tags })
+                  }
+                })
+                setTimeout(function () {
+                  options.onModify()
+                }, 50)
+              }
+            },
+            {
+              label: l('bookmarksDeleteTag'),
+              click: async function () {
+                const items = await places.getAllItems()
+                items.forEach(function (item) {
+                  if (item.tags.includes(tag)) {
+                    item.tags = item.tags.filter(t => t !== tag)
+                    places.updateItem(item.url, { tags: item.tags })
+                  }
+                })
+                setTimeout(function () {
+                  options.onModify()
+                }, 50)
+              }
+            },
+            {
+              label: l('deleteBookmarksWithTag'),
+              click: async function () {
+                const items = await places.getAllItems()
+                items.forEach(function (item) {
+                  if (item.tags.includes(tag)) {
+                    places.deleteHistory(item.url)
+                  }
+                })
+                setTimeout(function () {
+                  options.onModify()
+                }, 50)
+              }
+            }
+          ]
+        ])
+      })
+    }
     return el
   },
   render: async function (url, options = {}) {
     bookmarkEditor.currentInstance = {}
-    bookmarkEditor.currentInstance.bookmark = await db.places.where('url').equals(url).first()
+    bookmarkEditor.currentInstance.bookmark = await places.getItem(url)
 
     var editor = document.createElement('div')
     editor.className = 'bookmark-editor searchbar-item'
@@ -71,7 +141,7 @@ const bookmarkEditor = {
 
     // delete button
     var delButton = document.createElement('button')
-    delButton.className = 'action-button always-visible bookmark-delete-button i carbon:delete'
+    delButton.className = 'action-button always-visible bookmark-delete-button i carbon:trash-can'
     delButton.tabIndex = -1
     editor.appendChild(delButton)
     delButton.addEventListener('click', function () {
@@ -93,7 +163,7 @@ const bookmarkEditor = {
     })
     tags.selected = bookmarkEditor.currentInstance.bookmark.tags
 
-    places.getSuggestedTags(bookmarkEditor.currentInstance.bookmark.url, function (suggestions) {
+    places.getSuggestedTags(bookmarkEditor.currentInstance.bookmark.url).then(function (suggestions) {
       tags.suggested = tags.suggested.concat(suggestions)
 
       tags.suggested.filter((tag, idx) => {
@@ -107,14 +177,13 @@ const bookmarkEditor = {
       var newTagInput = document.createElement('input')
       newTagInput.className = 'tag-input'
       newTagInput.placeholder = l('bookmarksAddTag')
-      newTagInput.classList.add('mousetrap')
       newTagInput.spellcheck = false
       tagArea.appendChild(newTagInput)
 
       newTagInput.addEventListener('keypress', function (e) {
         if (e.keyCode !== 8 && e.keyCode !== 13) {
-          places.getAllTagsRanked(bookmarkEditor.currentInstance.bookmark.url, function (results) {
-            autocomplete.autocomplete(newTagInput, results.map(r => r.tag))
+          places.getAllTagsRanked(bookmarkEditor.currentInstance.bookmark.url).then(function (results) {
+            autocomplete.autocomplete(newTagInput, results.map(r => [r.tag]))
           })
         }
       })

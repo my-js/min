@@ -5,11 +5,14 @@ const outFile = path.resolve(__dirname, '../main.build.js')
 
 const modules = [
   'dist/localization.build.js',
+  'main/windowManagement.js',
+  'js/util/keyMap.js',
   'main/menu.js',
   'main/touchbar.js',
   'main/registryConfig.js',
-  'main/main.js',
   'js/util/settings/settingsMain.js',
+  'main/main.js',
+  'main/minInternalProtocol.js',
   'main/filtering.js',
   'main/viewManager.js',
   'main/download.js',
@@ -19,7 +22,8 @@ const modules = [
   'main/remoteMenu.js',
   'main/remoteActions.js',
   'main/keychainService.js',
-  'js/util/proxy.js'
+  'js/util/proxy.js',
+  'main/themeMain.js'
 ]
 
 function buildMain () {

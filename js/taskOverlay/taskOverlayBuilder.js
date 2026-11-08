@@ -25,7 +25,7 @@ function getTaskRelativeDate (task) {
 }
 
 function toggleCollapsed (taskContainer, task) {
-  tasks.get(task.id).collapsed = !tasks.isCollapsed(task.id)
+  tasks.update(task.id, {collapsed: !tasks.isCollapsed(task.id)})
   taskContainer.classList.toggle('collapsed')
 
   var collapseButton = taskContainer.querySelector('.task-collapse-button')
@@ -64,7 +64,6 @@ var TaskOverlayBuilder = {
       nameInputField: function (task, taskIndex) {
         var input = document.createElement('input')
         input.classList.add('task-name')
-        input.classList.add('mousetrap')
 
         var taskName = l('defaultTaskName').replace('%n', taskIndex + 1)
 
@@ -77,7 +76,7 @@ var TaskOverlayBuilder = {
             this.blur()
           }
 
-          task.name = this.value
+          tasks.update(task.id, {name: this.value})
         })
 
         input.addEventListener('focusin', function (e) {
@@ -269,7 +268,11 @@ var TaskOverlayBuilder = {
 
         el.setAttribute('data-tab', tab.id)
 
-        el.addEventListener('click', events.tabSelect)
+        el.addEventListener('click', function (e) {
+          if (!e.metaKey && !e.ctrlKey && !e.shiftKey) {
+            events.tabSelect.call(this, e)
+          }
+        })
         return el
       },
 

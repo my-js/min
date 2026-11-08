@@ -1,42 +1,22 @@
-const debianInstaller = require('electron-installer-debian')
+const builder = require('electron-builder')
+const Platform = builder.Platform
+const Arch = builder.Arch
 
-const packageFile = require('./../package.json')
-const version = packageFile.version
-const platform = process.argv.find(arg => arg.match('platform')).split('=')[1]
+const createPackage = require('./createPackage.js')
 
-function toTarget (platform) {
-  switch (platform) {
-    case 'amd64':
-      return 'linuxAmd64'
-    case 'armhf':
-      return 'raspi'
-    case 'arm64':
-      return 'linuxArm64'
-    default:
-      return platform
-  }
-}
-
-require('./createPackage.js')(toTarget(platform)).then(function (appPaths) {
+async function afterPackageBuilt (path, arch) {
   var installerOptions = {
-    src: appPaths[0],
-    dest: 'dist/app',
-    arch: platform,
-    productName: 'Min',
-    genericName: 'Web Browser',
-    version: version,
-    section: 'web',
-    homepage: 'https://minbrowser.github.io/min/',
+    artifactName: 'min-${version}-${arch}.deb',
+    packageName: 'min',
     icon: 'icons/icon256.png',
-    categories: ['Network', 'WebBrowser'],
-    mimeType: ['x-scheme-handler/http', 'x-scheme-handler/https', 'text/html'],
+    category: 'Network;WebBrowser',
+    packageCategory: 'Network',
+    mimeTypes: ['x-scheme-handler/http', 'x-scheme-handler/https', 'text/html'],
     maintainer: 'Min Developers <280953907a@zoho.com>',
     description: 'Min is a fast, minimal browser that protects your privacy.',
-    productDescription: 'A web browser with smarter search, improved tab management, and built-in ad blocking. Includes full-text history search, instant answers from DuckDuckGo, the ability to split tabs into groups, and more.',
+    synopsis: 'A web browser with smarter search, improved tab management, and built-in ad blocking. Includes full-text history search, instant answers from DuckDuckGo, the ability to split tabs into groups, and more.',
     depends: [
-      'libsecret-1-dev',
-      'gconf2',
-      'gconf-service',
+      'libsecret-1-0',
       'libasound2',
       'libc6',
       'libcap2',
@@ -50,18 +30,40 @@ require('./createPackage.js')(toTarget(platform)).then(function (appPaths) {
       'python | python3',
       'xdg-utils'
     ],
-    scripts: {
-      postinst: 'resources/postinst_script',
-      prerm: 'resources/prerm_script'
-    }
+    afterInstall: 'resources/postinst_script',
+    afterRemove: 'resources/prerm_script'
   }
 
   console.log('Creating package (this may take a while)')
 
-  debianInstaller(installerOptions)
+  const options = {
+    linux: {
+      target: ['deb']
+    },
+    directories: {
+      buildResources: 'resources',
+      output: 'dist/app/'
+    },
+    deb: installerOptions,
+    publish: null
+  }
+
+  await builder.build({
+    prepackaged: path,
+    targets: Platform.LINUX.createTarget(['deb'], arch),
+    config: options
+  })
     .then(() => console.log('Successfully created package.'))
     .catch(err => {
       console.error(err, err.stack)
       process.exit(1)
     })
-})
+}
+
+const arches = [Arch.x64, Arch.arm64];
+
+(async () => {
+  for (const arch of arches) {
+    await createPackage('linux', { arch: arch }).then(path => afterPackageBuilt(path, arch))
+  }
+})()

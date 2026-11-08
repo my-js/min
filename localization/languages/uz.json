@@ -23,16 +23,21 @@
     "cut": "Kesish",
     "copy": "Nusxa olish", //this is a verb (as in "copy the currently-selected text")
     "paste": "Qo'yish",
+    "pasteAndMatchStyle": null, //missing translation
     "goBack": "Ortga qaytish",
     "goForward": "",
     "inspectElement": "Elementni kuzatish",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": null, //missing translation
     "DDGAnswerSubtitle": "Javob", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Taklif qilingan sahifa", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "DuckDuckGo dan javoblar", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Vazifa %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Ko'proq ko'rsatish",
@@ -50,6 +55,9 @@
     "addBookmark": "Xatcho'pga qo'shish",
     "searchBookmarks": "Xatcho'plarni izlash",
     "bookmarksAddTag": "Teg qo'shish...",
+    "bookmarksRenameTag": null, //missing translation
+    "bookmarksDeleteTag": null, //missing translation
+    "deleteBookmarksWithTag": null, //missing translation
     "bookmarksSimilarItems": "Bir xil elementlar",
     "searchHistory": "Tarixdan qidirish",
     "importBookmarks": "Xatcho'plarni HTML fayldan import qilish",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Min bu sahifaga xavfsiz ulana olmadi. Iltimos, kompyuter soati to'g'ri sozlanganiga ishonch hosil qiling.",
     "addressInvalidTitle": "Bu manzil yaroqsiz.",
     "genericError": "Muammo yuz berdi",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Bu sahifa sizga ziyon yetkazishi mumkin.",
-    "phishingErrorMessage": "Ushbu sahifa sizning shaxsiy ma'lumotlaringizni, masalan, parollar yoki bank ma'lumotlarini o'g'irlashga urinayotgan bo'lishi mumkin.",
-    "phishingErrorVisitAnyway": "Baribir sahifaga kirish",
-    "phishingErrorLeave": "Sahifani tark etish",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Muammo yuz berdi. Iltimos, barcha ochiq namunalarni yopib Minni qaytadan oching.",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": null //missing translation
     },
-    "settingsCustomBangs": null, // missing translation
-    "settingsCustomBangsAdd": null, // missing translation
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": null, // missing translation
     "settingsCustomBangsSnippet": null, // missing translation
     "settingsCustomBangsRedirect": null, // missing translation
@@ -154,15 +157,24 @@
     "settingsAdditionalFeaturesHeading": "Qo'shimcha xususiyatlar",
     "settingsUserscriptsToggle": "Foydalanuvchi skriptlarini yoqish",
     "settingsShowDividerToggle": null, //missing translation
+    "settingsLanguageSelection": null, //missing translation
     "settingsSeparateTitlebarToggle": "Alohida sarlavha paneli ishlatish",
     "settingsAutoplayToggle": null, //missing translation 
     "settingsOpenTabsInForegroundToggle": null, //missing translation
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Foydalanuvchi skriptlari sahifa ishlashini o'zgartirishga yordam beradi - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">qo'shimcha ma'lumot</a>."
     },
+    "settingsUserscriptShowDirectory": null, //missing translation,
     "settingsUserAgentToggle": "Maxsus foydalanvuchi agentidan foydalanish",
     "settingsUpdateNotificationsToggle": " Yangilanishlarni avtomatik ravishda tekshirish",
     "settingsUsageStatisticsToggle": null, //missing translation
+    "settingsStartupOptions": null, //missing translation
+    "settingsStartupCreateTask": null, //missing translation
+    "settingsStartupNewTaskandBackground": null, //missing translation
+    "settingsStartupNewTaskOnly": null, //missing translation
+    "settingsNewWindowOptions": null, //missing translation
+    "settingsNewWindowCreateTask": null, //missing translation
+    "settingsNewWindowPickTask": null, //missing translation
     "settingsSearchEngineHeading": "Qidiruv Tizimi",
     "settingsDefaultSearchEngine": "Standart qidiruv tizimini tanlang:",
     "settingsDDGExplanation": "Qidiruv panelida tezkor javoblarni ko'rish uchun DuckDuckGo ni standart qidiruv tizimi sifatida o'rnating.",
@@ -182,6 +194,7 @@
     "appMenuDuplicateTab": "Duplikat varaq",
     "appMenuNewPrivateTab": "Yangi maxfiy varaq",
     "appMenuNewTask": "Yangi vazifa",
+    "appMenuNewWindow": null, //missing translation
     "appMenuSavePageAs": "Sahifani saqlash",
     "appMenuPrint": "Chop etish",
     "appMenuEdit": "O'zgartirish",
@@ -190,6 +203,7 @@
     "appMenuCut": "Kesish",
     "appMenuCopy": "Nusxa olish",
     "appMenuPaste": "Qo'yish",
+    "appMenuPasteAndMatchStyle": null, //missing translation
     "appMenuSelectAll": "Barchasini tanlash",
     "appMenuFind": "Izlash",
     "appMenuView": "Ko'rinish",
@@ -221,7 +235,11 @@
     "appMenuShowAll": "Barchasini ko'rsatish",
     "appMenuQuit": "%n chiqish",
     "appMenuBringToFront": "Barchasini oldinga olib kelish",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": null, //missing translation
     "PDFPageCounter": {
       "unsafeHTML": "Sahifa <input type='text'/> of <span id='total'></span>"
     },
@@ -265,13 +283,14 @@
     "passwordCaptureSave": null, //missing translation
     "passwordCaptureDontSave": null, //missing translation
     "passwordCaptureNeverSave": null, //missing translation
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": null, //missing translation
     "savedPasswordsEmpty": null, //missing translation
     "savedPasswordsNeverSavedLabel": null, //missing translation
     "deletePassword": null, //missing translation
     /* Dialogs */
-    "loginPromptTitle": "%h (%r) tizimiga kirish", //%h is replaced with host, %r with realm (title of protected part of site)
+    "loginPromptTitle": "%h tizimiga kirish", //%h is replaced with host, %r with realm (title of protected part of site)
     "dialogConfirmButton": "Tasdiqlash",
     "dialogSkipButton": "Bekor qilish",
     "username": "Foydalanuvchi ismi",

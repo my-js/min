@@ -5,7 +5,7 @@ const urlParser = require('util/urlParser.js')
 
 const PDFViewer = {
   url: {
-    base: urlParser.getFileURL(__dirname + '/pages/pdfViewer/index.html'),
+    base: 'min://app/pages/pdfViewer/index.html',
     queryString: '?url=%l'
   },
   isPDFViewer: function (tabId) {
@@ -41,7 +41,7 @@ const PDFViewer = {
   },
   handlePDFOpenEvent: function (event, data) {
     if (!data.tabId) {
-      var matchingTabs = tabs.get().filter(t => t.url === data.url).sort((a, b) => { return b.lastActivity - a.lastActivity })
+      var matchingTabs = tabs.get().filter(t => urlParser.getSourceURL(t.url) === data.url).sort((a, b) => { return b.lastActivity - a.lastActivity })
       if (matchingTabs[0]) {
         data.tabId = matchingTabs[0].id
       }
@@ -55,6 +55,15 @@ const PDFViewer = {
   },
   initialize: function () {
     ipc.on('openPDF', PDFViewer.handlePDFOpenEvent)
+
+    // This is a defense-in-depth measure to prevent content inside the viewer page from manipulating the url query parma
+    // Without this, if content from origin A escaped the sandbox, it could rewrite the param to origin B, and then fetch cross-origin content from that origin
+    webviews.bindEvent('did-navigate-in-page', function (event, url, isMainFrame, frameProcessId, frameRoutingId) {
+      if (url.startsWith(PDFViewer.url.base)) {
+        console.warn('Resetting PDF viewer because in-page navigation occurred')
+        webviews.callAsync(tabs.getSelected(), 'reload')
+      }
+    })
   }
 }
 

@@ -23,16 +23,21 @@
     "cut": "কাট",
     "copy": "কপি", //this is a verb (as in "copy the currently-selected text")
     "paste": "প্রতিলেপন",
+    "pasteAndMatchStyle": null, //missing translation
     "goBack": "ফিরে যাও",
     "goForward": "সামনে আগান",
     "inspectElement": "এলিমেন্ট পরিদর্শন করুন",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "পেস্ট করুন এবং যান",
     "DDGAnswerSubtitle": "উত্তর", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "প্রস্তাবিত সাইট", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "ডকডকলহ থেকে ফলাফল", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "টাস্ক%n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
       these are some of the items that show up when you press ! in the searchbar.
       Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "আরো দেখুন",
@@ -50,6 +55,9 @@
     "addBookmark": "বুকমার্কে সংযুক্তকরন",
     "searchBookmarks": "বুকমার্কগুলি অনুসন্ধান করুন",
     "bookmarksAddTag": "ট্যাগ যুক্ত করুন ...",
+    "bookmarksRenameTag": null, //missing translation
+    "bookmarksDeleteTag": null, //missing translation
+    "deleteBookmarksWithTag": null, //missing translation
     "bookmarksSimilarItems": "অনুরূপ আইটেম",
     "searchHistory": "অনুসন্ধানের ইতিহাস",
     "importBookmarks": "এইচটিএমএল ফাইল থেকে বুকমার্কগুলি আমদানি করুন",
@@ -110,12 +118,7 @@
     "genericConnectionFail": "Min ওয়েবসাইট সংযোগ করতে পারে না।",
     "sslTimeErrorMessage": "Min এই ওয়েবসাইট থেকে নিরাপদে সংযোগ করতে পারে নি। দয়া করে নিশ্চিত করুন যে আপনার কম্পিউটারের ঘড়ি সঠিকভাবে সেট করা আছে।",
     "addressInvalidTitle": "এই ঠিকানাটি অবৈধ।",
-    /* pages/phishing/index.html */
     "genericError": "একটি ত্রুটি ঘটেছে",
-    "phishingErrorTitle": "এই সাইটটি আপনাকে ক্ষতি করতে পারে।",
-    "phishingErrorMessage": "এই ওয়েবসাইট আপনার ব্যক্তিগত তথ্য, যেমন পাসওয়ার্ড বা ব্যাংকিং তথ্য চুরি করার চেষ্টা করা হতে পারে।",
-    "phishingErrorVisitAnyway": "যাইহোক সাইট পরিদর্শন করুন",
-    "phishingErrorLeave": "এই সাইটটি ছেড়ে দিন",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "একটি ত্রুটি ঘটেছে. অন্য কোনও খোলা দৃষ্টান্ত বন্ধ করুন এবং Min পুনরায় আরম্ভ করুন।",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "এখনও অবধি, Min <strong></strong> বিজ্ঞাপন এবং ট্র্যাকারদের অবরুদ্ধ করেছে"
     },
-    "settingsCustomBangs": null, // missing translation
-    "settingsCustomBangsAdd": null, // missing translation
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": null, // missing translation
     "settingsCustomBangsSnippet": null, // missing translation
     "settingsCustomBangsRedirect": null, // missing translation
@@ -154,15 +157,24 @@
     "settingsAdditionalFeaturesHeading": "অতিরিক্ত বৈশিষ্ট্য",
     "settingsUserscriptsToggle": "ব্যবহারকারী স্ক্রিপ্ট সক্রিয় করুন",
     "settingsShowDividerToggle": "ট্যাবগুলির মধ্যে বিভাজক দেখান",
+    "settingsLanguageSelection": null, //missing translation
     "settingsSeparateTitlebarToggle": "পৃথক শিরোনাম বার ব্যবহার করুন",
     "settingsAutoplayToggle": null, //missing translation 
     "settingsOpenTabsInForegroundToggle": "অগ্রভাগে নতুন ট্যাবগুলি খুলুন",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "ব্যবহারকারীর স্ক্রিপ্ট আপনাকে ওয়েবসাইটের আচরণ পরিবর্তন করার অনুমতি দেয় - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\"> আরও শিখুন </a>"
     },
+    "settingsUserscriptShowDirectory": null, //missing translation,
     "settingsUserAgentToggle": "একটি কাস্টম ব্যবহারকারী এজেন্ট ব্যবহার করুন",
     "settingsUpdateNotificationsToggle": "স্বয়ংক্রিয়ভাবে আপডেটগুলির জন্য পরীক্ষা করুন",
     "settingsUsageStatisticsToggle": null, //missing translation
+    "settingsStartupOptions": null, //missing translation
+    "settingsStartupCreateTask": null, //missing translation
+    "settingsStartupNewTaskandBackground": null, //missing translation
+    "settingsStartupNewTaskOnly": null, //missing translation
+    "settingsNewWindowOptions": null, //missing translation
+    "settingsNewWindowCreateTask": null, //missing translation
+    "settingsNewWindowPickTask": null, //missing translation
     "settingsSearchEngineHeading": "খোঁজ যন্ত্র",
     "settingsDefaultSearchEngine": "একটি ডিফল্ট অনুসন্ধান ইঞ্জিন চয়ন করুন:",
     "settingsDDGExplanation": "Searchbar এ তাত্ক্ষণিক উত্তর দেখতে ডিফল্ট অনুসন্ধান ইঞ্জিন হিসাবে DuckDuckGo সেট করুন।",
@@ -182,6 +194,7 @@
     "appMenuDuplicateTab": "ডুপ্লিকেট ট্যাব",
     "appMenuNewPrivateTab": "নতুন ব্যক্তিগত ট্যাব",
     "appMenuNewTask": "ত্যে",
+    "appMenuNewWindow": null, //missing translation
     "appMenuSavePageAs": "যেমন পৃষ্ঠা সংরক্ষণ",
     "appMenuPrint": "ছাপা",
     "appMenuEdit": "সম্পাদন করা",
@@ -190,6 +203,7 @@
     "appMenuCut": "কাটা",
     "appMenuCopy": "কপি",
     "appMenuPaste": "প্রতিলেপন",
+    "appMenuPasteAndMatchStyle": null, //missing translation
     "appMenuSelectAll": "সব নির্বাচন করুন",
     "appMenuFind": "আবিষ্কার",
     "appMenuView": "দৃশ্য",
@@ -221,7 +235,11 @@
     "appMenuShowAll": "সব দেখাও",
     "appMenuQuit": "%n ছাড়ুন",
     "appMenuBringToFront": "সব থেকে সামনে আনুন",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": null, //missing translation
     "PDFPageCounter": {
       "unsafeHTML": "<span id = 'total'> </ span> এর <input type = 'text' /> পৃষ্ঠা"
     },
@@ -261,25 +279,26 @@
     "passwordManagerSetupRetry": null, //missing translation
     "passwordManagerUnlock": null, //missing translation
     /* Password save bar */
-    "passwordCaptureSavePassword": null, //missing translation
-    "passwordCaptureSave": null, //missing translation
-    "passwordCaptureDontSave": null, //missing translation
-    "passwordCaptureNeverSave": null, //missing translation
+    "passwordCaptureSavePassword": "%s এর জন্য পাসওয়ার্ড সংরক্ষণ করবেন?",
+    "passwordCaptureSave": "সংরক্ষণ করুন",
+    "passwordCaptureDontSave": "সংরক্ষণ না করুন",
+    "passwordCaptureNeverSave": "কখনও সংরক্ষণ করবেন না",
+    "generatePassword": null, // missing translation
     /* Password viewer */
-    "savedPasswordsHeading": null, //missing translation
-    "savedPasswordsEmpty": null, //missing translation
-    "savedPasswordsNeverSavedLabel": null, //missing translation
-    "deletePassword": null, //missing translation
+    "savedPasswordsHeading": "সংরক্ষিত পাসওয়ার্ডস",
+    "savedPasswordsEmpty": "কোনো সংরক্ষিত পাসওয়ার্ড নেই।",
+    "savedPasswordsNeverSavedLabel": "কখনও সংরক্ষণ হয়নি",
+    "deletePassword": "%s এর জন্য পাসওয়ার্ড মুছতে চান?",
     /* Dialogs */
-    "loginPromptTitle": null, //missing translation
-    "dialogConfirmButton": null, //missing translation
-    "dialogSkipButton": null, //missing translation
-    "username": null, //missing translation
-    "email": null, //missing translation
-    "password": null, //missing translation
-    "secretKey": null, //missing translation
-    "openExternalApp": null, //missing translation
-    "clickToCopy": null, //missing translation
-    "copied": null //missing translation
+    "loginPromptTitle": "%h এ সাইন ইন করুন", // %h will be replaced with the host
+    "dialogConfirmButton": "কনফার্ম",
+    "dialogSkipButton": "বাতিল করুন",
+    "username": "ইউজারনেম",
+    "email": "ইমেইল",
+    "password": "পাসওয়ার্ড",
+    "secretKey": "গোপন চাবি",
+    "openExternalApp": "\\\"%s\\\" তে খোলা হবে?", // %s is the name of an app
+    "clickToCopy": "কপি করতে ক্লিক করুন",
+    "copied": "কপি হয়েছে"
   }
 }

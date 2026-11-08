@@ -141,12 +141,13 @@ class Bitwarden {
     } catch (ex) {
       const { error, data } = ex
 
+      console.error('Error accessing Bitwarden CLI. STDOUT: ' + data + '. STDERR: ' + error)
+
       if (error.includes('not logged in')) {
         await this.signInAndSave()
         return await this.unlockStore(password)
       }
 
-      console.error('Error accessing Bitwarden CLI. STDOUT: ' + data + '. STDERR: ' + error)
       throw ex
     }
   }
@@ -173,7 +174,7 @@ class Bitwarden {
       ok: l('dialogConfirmButton'),
       cancel: l('dialogSkipButton'),
       width: 500,
-      height: 240
+      height: 260
     })
 
     for (const key in credentials) {

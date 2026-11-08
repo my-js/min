@@ -20,10 +20,7 @@ const tabBar = {
   containerInner: document.getElementById('tabs-inner'),
   tabElementMap: {}, // tabId: tab element
   events: new EventEmitter(),
-  dragulaInstance: dragula([document.getElementById('tabs-inner')], {
-    direction: 'horizontal',
-    slideFactorX: 25
-  }),
+  dragulaInstance: null,
   getTab: function (tabId) {
     return tabBar.tabElementMap[tabId]
   },
@@ -67,11 +64,6 @@ const tabBar = {
       iconArea.appendChild(pbIcon)
     }
 
-    var secIcon = document.createElement('i')
-    secIcon.className = 'icon-tab-not-secure tab-icon tab-info-icon i carbon:unlocked'
-    secIcon.title = l('connectionNotSecure')
-    iconArea.appendChild(secIcon)
-
     var closeTabButton = document.createElement('button')
     closeTabButton.className = 'tab-icon tab-close-button i carbon:close'
 
@@ -87,10 +79,21 @@ const tabBar = {
 
     // title
 
+    var titleContainer = document.createElement('div')
+    titleContainer.className = 'title-container'
+
     var title = document.createElement('span')
     title.className = 'title'
 
-    tabEl.appendChild(title)
+    // URL
+
+    var urlElement = document.createElement('span')
+    urlElement.className = 'url-element'
+
+    titleContainer.appendChild(title)
+    titleContainer.appendChild(urlElement)
+
+    tabEl.appendChild(titleContainer)
 
     // click to enter edit mode or switch to a tab
     tabEl.addEventListener('click', function (e) {
@@ -158,6 +161,19 @@ const tabBar = {
       tabEl.title += ' (' + l('privateTab') + ')'
     }
 
+    var tabUrl = urlParser.getDomain(tabData.url)
+    if (tabUrl.startsWith('www.') && tabUrl.split('.').length > 2) {
+      tabUrl = tabUrl.replace('www.', '')
+    }
+
+    tabEl.querySelector('.url-element').textContent = tabUrl
+
+    if (tabUrl && !urlParser.isInternalURL(tabData.url)) {
+      tabEl.classList.add('has-url')
+    } else {
+      tabEl.classList.remove('has-url')
+    }
+
     // update tab audio icon
     var audioButton = tabEl.querySelector('.tab-audio-button')
     tabAudio.updateButton(tabId, audioButton)
@@ -168,11 +184,16 @@ const tabBar = {
       tabEl.insertBefore(button, tabEl.children[0])
     })
 
-    var secIcon = tabEl.getElementsByClassName('icon-tab-not-secure')[0]
-    if (tabData.secure === false) {
-      secIcon.hidden = false
-    } else {
-      secIcon.hidden = true
+    var iconArea = tabEl.getElementsByClassName('tab-icon-area')[0]
+
+    var insecureIcon = tabEl.getElementsByClassName('icon-tab-not-secure')[0]
+    if (tabData.secure === true && insecureIcon) {
+      insecureIcon.remove()
+    } else if (tabData.secure === false && !insecureIcon) {
+      var insecureIcon = document.createElement('i')
+      insecureIcon.className = 'icon-tab-not-secure tab-icon tab-info-icon i carbon:unlocked'
+      insecureIcon.title = l('connectionNotSecure')
+      iconArea.appendChild(insecureIcon)
     }
   },
   updateAll: function () {
@@ -188,6 +209,7 @@ const tabBar = {
     if (tabs.getSelected()) {
       tabBar.setActiveTab(tabs.getSelected())
     }
+    tabBar.handleSizeChange()
   },
   addTab: function (tabId) {
     var tab = tabs.get(tabId)
@@ -196,6 +218,7 @@ const tabBar = {
     var tabEl = tabBar.createTab(tab)
     tabBar.containerInner.insertBefore(tabEl, tabBar.containerInner.childNodes[index])
     tabBar.tabElementMap[tabId] = tabEl
+    tabBar.handleSizeChange()
   },
   removeTab: function (tabId) {
     var tabEl = tabBar.getTab(tabId)
@@ -204,6 +227,7 @@ const tabBar = {
       // This happens when destroying tabs from other task where this .tab-item is not present
       tabBar.containerInner.removeChild(tabEl)
       delete tabBar.tabElementMap[tabId]
+      tabBar.handleSizeChange()
     }
   },
   handleDividerPreference: function (dividerPreference) {
@@ -212,22 +236,56 @@ const tabBar = {
     } else {
       tabBar.navBar.classList.remove('show-dividers')
     }
+  },
+  initializeTabDragging: function () {
+    tabBar.dragulaInstance = dragula([document.getElementById('tabs-inner')], {
+      direction: 'horizontal',
+      slideFactorX: 25
+    })
+
+    tabBar.dragulaInstance.on('drop', function (el, target, source, sibling) {
+      var tabId = el.getAttribute('data-tab')
+      if (sibling) {
+        var adjacentTabId = sibling.getAttribute('data-tab')
+      }
+
+      var oldTab = tabs.splice(tabs.getIndex(tabId), 1)[0]
+
+      var newIdx
+      if (adjacentTabId) {
+        newIdx = tabs.getIndex(adjacentTabId)
+      } else {
+        // tab was inserted at end
+        newIdx = tabs.count()
+      }
+
+      tabs.splice(newIdx, 0, oldTab)
+    })
+  },
+  handleSizeChange: function () {
+    if (window.innerWidth / tabBar.containerInner.childNodes.length < 190) {
+      tabBar.container.classList.add('compact-tabs')
+    } else {
+      tabBar.container.classList.remove('compact-tabs')
+    }
   }
 }
+
+window.addEventListener('resize', tabBar.handleSizeChange)
 
 settings.listen('showDividerBetweenTabs', function (dividerPreference) {
   tabBar.handleDividerPreference(dividerPreference)
 })
 
-/* tab loading and progress bar status*/
+/* tab loading and progress bar status */
 webviews.bindEvent('did-start-loading', function (tabId) {
   progressBar.update(tabBar.getTab(tabId).querySelector('.progress-bar'), 'start')
-  tabs.update(tabId,{ loaded: false })
+  tabs.update(tabId, { loaded: false })
 })
 
 webviews.bindEvent('did-stop-loading', function (tabId) {
   progressBar.update(tabBar.getTab(tabId).querySelector('.progress-bar'), 'finish')
-  tabs.update(tabId,{ loaded: true })
+  tabs.update(tabId, { loaded: true })
   tabBar.updateTab(tabId)
 })
 
@@ -239,41 +297,31 @@ tasks.on('tab-updated', function (id, key) {
 })
 
 permissionRequests.onChange(function (tabId) {
-  tabBar.updateTab(tabId)
+  if (tabs.get(tabId)) {
+    tabBar.updateTab(tabId)
+  }
 })
 
-if (window.platformType === 'mac') {
-  tabBar.dragulaInstance.containers = []
-} else {
-  tabBar.dragulaInstance.on('drop', function (el, target, source, sibling) {
-    var tabId = el.getAttribute('data-tab')
-    if (sibling) {
-      var adjacentTabId = sibling.getAttribute('data-tab')
-    }
-
-    var oldTab = tabs.splice(tabs.getIndex(tabId), 1)[0]
-
-    var newIdx
-    if (adjacentTabId) {
-      newIdx = tabs.getIndex(adjacentTabId)
-    } else {
-    // tab was inserted at end
-      newIdx = tabs.count()
-    }
-
-    tabs.splice(newIdx, 0, oldTab)
-  })
-}
+tabBar.initializeTabDragging()
 
 tabBar.container.addEventListener('dragover', e => e.preventDefault())
 
 tabBar.container.addEventListener('drop', e => {
   e.preventDefault()
   var data = e.dataTransfer
-  require('browserUI.js').addTab(tabs.add({
-    url: data.files[0] ? 'file://' + data.files[0].path : data.getData('text'),
-    private: tabs.get(tabs.getSelected()).private
-  }), { enterEditMode: false, openInBackground: !settings.get('openTabsInForeground') })
+  var path = data.files[0] ? 'file://' + electron.webUtils.getPathForFile(data.files[0]) : data.getData('text')
+  if (!path) {
+    return
+  }
+  if (tabEditor.isShown || tabs.isEmpty()) {
+    webviews.update(tabs.getSelected(), path)
+    tabEditor.hide()
+  } else {
+    require('browserUI.js').addTab(tabs.add({
+      url: path,
+      private: tabs.get(tabs.getSelected()).private
+    }), { enterEditMode: false, openInBackground: !settings.get('openTabsInForeground') })
+  }
 })
 
 module.exports = tabBar

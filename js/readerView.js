@@ -1,15 +1,11 @@
 var webviews = require('webviews.js')
 var keybindings = require('keybindings.js')
-var searchbar = require('searchbar/searchbar.js')
-var searchbarPlugins = require('searchbar/searchbarPlugins.js')
-var bangsPlugin = require('searchbar/bangsPlugin.js')
 var urlParser = require('util/urlParser.js')
-var { db } = require('util/database.js')
 
 var readerDecision = require('readerDecision.js')
 
 var readerView = {
-  readerURL: urlParser.getFileURL(__dirname + '/reader/index.html'),
+  readerURL: 'min://app/reader/index.html',
   getReaderURL: function (url) {
     return readerView.readerURL + '?url=' + url
   },
@@ -76,6 +72,15 @@ var readerView = {
     webviews.callAsync(tabs.getSelected(), 'executeJavaScript', 'parentProcessActions.printArticle()')
   },
   initialize: function () {
+    // This is a defense-in-depth measure to prevent content inside the reader page from manipulating the url query parma
+    // Without this, if content from origin A escaped the sandbox, it could rewrite the param to origin B, and then fetch cross-origin content from that origin
+    webviews.bindEvent('did-navigate-in-page', function (event, url, isMainFrame, frameProcessId, frameRoutingId) {
+      if (url.startsWith(readerView.readerURL)) {
+        console.warn('Resetting reader view because in-page navigation occurred')
+        webviews.callAsync(tabs.getSelected(), 'reload')
+      }
+    })
+
     // update the reader button on page load
 
     webviews.bindEvent('did-start-navigation', function (tabId, url, isInPlace, isMainFrame, frameProcessId, frameRoutingId) {

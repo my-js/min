@@ -23,16 +23,21 @@
     "cut": "Taglia",
     "copy": "Copia", //this is a verb (as in "copy the currently-selected text")
     "paste": "Incolla",
+    "pasteAndMatchStyle": null, //missing translation
     "goBack": "Indietro",
     "goForward": "Avanti",
     "inspectElement": "Ispeziona elemento",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "Incolla e Vai",
     "DDGAnswerSubtitle": "Risposta", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Sito suggerito", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Risultati di DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Task %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Mostra di più",
@@ -50,6 +55,9 @@
     "addBookmark": "Aggiungi preferiti",
     "searchBookmarks": "Cerca nei Preferiti",
     "bookmarksAddTag": "Aggiungi tag...",
+    "bookmarksRenameTag": "Rinomina tag",
+    "bookmarksDeleteTag": "Elimina tag",
+    "deleteBookmarksWithTag": "Elimina Preferiti con tag",
     "bookmarksSimilarItems": "Oggetti simili",
     "searchHistory": "Cerca nella cronologia",
     "importBookmarks": "Importa preferiti da file HTML",
@@ -71,7 +79,7 @@
     "taskDeleteWarning": {
       "unsafeHTML": "Task eliminato. <a>Annullare?</a>"
     },
-    "tasksSearchTabs": null, //missing translation
+    "tasksSearchTabs": "Cerca scheda",
     "returnToTask": "Torna al task precedente",
     "taskDescriptionTwo": "%t , %t",
     "taskDescriptionThree": "%t, %t, e altri %n",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "Min non ha potuto stabilire una connessione sicura con questo sito. Assicurati che l'orologio di questo computer sia impostato correttamente.",
     "addressInvalidTitle": "Questo indirizzo non è valido.",
     "genericError": "Si è verificato un errore",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Questo sito è pericoloso.",
-    "phishingErrorMessage": "Questo sito potrebbe cercare di rubare i tuoi dati sensibili, come password o credenziali bancarie.",
-    "phishingErrorVisitAnyway": "Visita sito comunque",
-    "phishingErrorLeave": "Portami via da questo sito",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Si è verificato un errore. Chiudi ogni altra instanza e riavvia Min.",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "Fino ad ora, Min ha bloccato <strong></strong> pubblicità e tracciatori"
     },
-    "settingsCustomBangs": "Bang personalizzati",
-    "settingsCustomBangsAdd": "Aggiungi bang personalizzato",
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": "Frase (Richiesto)",
     "settingsCustomBangsSnippet": "Descrizione (Opzionale)",
     "settingsCustomBangsRedirect": "URL Reindirizzamento (Richiesto)",
@@ -149,22 +152,31 @@
     "settingsDarkModeNever": "Mai",
     "settingsDarkModeNight": "Di notte",
     "settingsDarkModeAlways": "Sempre",
-    "settingsDarkModeSystem": null,
+    "settingsDarkModeSystem": "Adotta il tema di sistema",
     "settingsSiteThemeToggle": "Abilita tema adattivo (si adatta al sito)",
     "settingsAdditionalFeaturesHeading": "Funzionalità aggiuntive",
     "settingsUserscriptsToggle": "Abilita script definiti dall'utente",
     "settingsShowDividerToggle": "Mostra divisore tra i schede",
+    "settingsLanguageSelection": null, //missing translation
     "settingsSeparateTitlebarToggle": "Usa barra del titolo separata",
     "settingsAutoplayToggle": "Abilita Autoplay",
     "settingsOpenTabsInForegroundToggle": "Apri nuove schede in primo piano",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Gli script definiti dall'utente ti permettono di modificare il comportamento dei siti - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">scopri di più</a>."
     },
+    "settingsUserscriptShowDirectory": null, //missing translation,
     "settingsUserAgentToggle": "Utilizza un user agent personalizzato",
     "settingsUpdateNotificationsToggle": "Controlla automaticamente la presenza di aggiornamenti",
     "settingsUsageStatisticsToggle": {
       "unsafeHTML": "Invia statistiche di utilizzo (<a href=\"https://github.com/minbrowser/min/blob/master/docs/statistics.md\">Maggiori informazioni</a>)"
     },
+    "settingsStartupOptions": null, //missing translation
+    "settingsStartupCreateTask": null, //missing translation
+    "settingsStartupNewTaskandBackground": null, //missing translation
+    "settingsStartupNewTaskOnly": null, //missing translation
+    "settingsNewWindowOptions": null, //missing translation
+    "settingsNewWindowCreateTask": null, //missing translation
+    "settingsNewWindowPickTask": null, //missing translation
     "settingsSearchEngineHeading": "Motore di ricerca",
     "settingsDefaultSearchEngine": "Scegli un motore di ricerca predefinito:",
     "settingsDDGExplanation": "Imposta DuckDuckGo come motore di ricerca predefinito per vedere risposte istantanee nella barra di ricerca.",
@@ -184,6 +196,7 @@
     "appMenuDuplicateTab": "Duplica scheda",
     "appMenuNewPrivateTab": "Nuova scheda privata",
     "appMenuNewTask": "Nuovo task",
+    "appMenuNewWindow": null, //missing translation
     "appMenuSavePageAs": "Salva pagina con nome",
     "appMenuPrint": "Stampa",
     "appMenuEdit": "Modifica",
@@ -192,6 +205,7 @@
     "appMenuCut": "Taglia",
     "appMenuCopy": "Copia",
     "appMenuPaste": "Incolla",
+    "appMenuPasteAndMatchStyle": null, //missing translation
     "appMenuSelectAll": "Seleziona tutto",
     "appMenuFind": "Trova",
     "appMenuView": "Vista",
@@ -223,7 +237,11 @@
     "appMenuShowAll": "Mostra tutte",
     "appMenuQuit": "Esci da %n",
     "appMenuBringToFront": "Porta avanti",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": null, //missing translation
     "PDFPageCounter": {
       "unsafeHTML": "pagina <input type='text'/> su <span id='total'></span>"
     },
@@ -260,7 +278,7 @@
     "passwordManagerSetupStep2": "Quindi trascina il tool nel box qui sotto:",
     "passwordManagerSetupDragBox": "Trascina il tool qui",
     "passwordManagerSetupInstalling": "Installazione...",
-    "passwordManagerBitwardenSignIn": null, //missing translation
+    "passwordManagerBitwardenSignIn": "Per collegare il tuo account Bitwarden, accedi dalla pagina vault.bitwarden.com/#/settings/account, scorri fino in fondo alla pagina, e scegli \"View API Key\". Poi copia i valori nei campi sottostanti.",
     "passwordManagerSetupSignIn": "Entra nel tuo gestore di password per iniziare ad usare l'autocompletamento. Le tue credenziali non saranno salvate da nessuna parte in Min.",
     "disableAutofill": "Disabilita autocompletamento",
     "passwordManagerSetupUnlockError": "Impossibile sbloccare le password: ",
@@ -271,13 +289,14 @@
     "passwordCaptureSave": "Salva",
     "passwordCaptureDontSave": "Non salvare",
     "passwordCaptureNeverSave": "Non salvare mai",
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": "Password salvate",
     "savedPasswordsEmpty": "Nessuna password salvata",
     "savedPasswordsNeverSavedLabel": "Mai salvata",
     "deletePassword": "Eliminare la password per %s?",
     /* Dialogs */
-    "loginPromptTitle": "Entra in %h (%r)",
+    "loginPromptTitle": "Entra in %h",
     "dialogConfirmButton": "Conferma",
     "dialogSkipButton": "Annulla",
     "username": "Nome utente",

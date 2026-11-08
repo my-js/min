@@ -29,7 +29,7 @@ function captureCurrentTab (options) {
 
 // called whenever a new page starts loading, or an in-page navigation occurs
 function onPageURLChange (tab, url) {
-  if (url.indexOf('https://') === 0 || url.indexOf('about:') === 0 || url.indexOf('chrome:') === 0 || url.indexOf('file://') === 0) {
+  if (url.indexOf('https://') === 0 || url.indexOf('about:') === 0 || url.indexOf('chrome:') === 0 || url.indexOf('file://') === 0 || url.indexOf('min://') === 0) {
     tabs.update(tab, {
       secure: true,
       url: url
@@ -40,6 +40,8 @@ function onPageURLChange (tab, url) {
       url: url
     })
   }
+
+  webviews.callAsync(tab, 'setVisualZoomLevelLimits', [1, 3])
 }
 
 // called whenever a navigation finishes
@@ -97,16 +99,18 @@ function setAudioMutedOnCreate (tabId, muted) {
 }
 
 const webviews = {
-  viewList: [], // [tabId]
   viewFullscreenMap: {}, // tabId, isFullscreen
   selectedId: null,
   placeholderRequests: [],
   asyncCallbacks: {},
   internalPages: {
-    error: urlParser.getFileURL(__dirname + '/pages/error/index.html')
+    error: 'min://app/pages/error/index.html'
   },
   events: [],
   IPCEvents: [],
+  hasViewForTab: function(tabId) {
+    return tabId && tasks.getTaskContainingTab(tabId) && tasks.getTaskContainingTab(tabId).tabs.get(tabId).hasWebContents
+  },
   bindEvent: function (event, fn) {
     webviews.events.push({
       event: event,
@@ -121,14 +125,14 @@ const webviews = {
       }
     }
   },
-  emitEvent: function (event, viewId, args) {
-    if (!webviews.viewList.includes(viewId)) {
+  emitEvent: function (event, tabId, args) {
+    if (!webviews.hasViewForTab(tabId)) {
       // the view could have been destroyed between when the event was occured and when it was recieved in the UI process, see https://github.com/minbrowser/min/issues/604#issuecomment-419653437
       return
     }
     webviews.events.forEach(function (ev) {
       if (ev.event === event) {
-        ev.fn.apply(this, [viewId].concat(args))
+        ev.fn.apply(this, [tabId].concat(args))
       }
     })
   },
@@ -161,12 +165,15 @@ const webviews = {
       }
 
       const viewMargins = webviews.viewMargins
-      return {
+
+      let position = {
         x: 0 + Math.round(viewMargins[3]),
         y: 0 + Math.round(viewMargins[0]) + navbarHeight,
         width: window.innerWidth - Math.round(viewMargins[1] + viewMargins[3]),
         height: window.innerHeight - Math.round(viewMargins[0] + viewMargins[2]) - navbarHeight
       }
+
+      return position
     }
   },
   add: function (tabId, existingViewId) {
@@ -190,9 +197,9 @@ const webviews = {
     ipc.send('createView', {
       existingViewId,
       id: tabId,
-      webPreferencesString: JSON.stringify({
+      webPreferences: {
         partition: partition || 'persist:webcontent'
-      }),
+      },
       boundsString: JSON.stringify(webviews.getViewBounds()),
       events: webviews.events.map(e => e.event).filter((i, idx, arr) => arr.indexOf(i) === idx)
     })
@@ -206,7 +213,9 @@ const webviews = {
       }
     }
 
-    webviews.viewList.push(tabId)
+    tasks.getTaskContainingTab(tabId).tabs.update(tabId, {
+      hasWebContents: true
+    })
   },
   setSelected: function (id, options) { // options.focus - whether to focus the view. Defaults to true.
     webviews.emitEvent('view-hidden', webviews.selectedId)
@@ -214,7 +223,7 @@ const webviews = {
     webviews.selectedId = id
 
     // create the view if it doesn't already exist
-    if (!webviews.viewList.includes(id)) {
+    if (!webviews.hasViewForTab(id)) {
       webviews.add(id)
     }
 
@@ -237,10 +246,14 @@ const webviews = {
   destroy: function (id) {
     webviews.emitEvent('view-hidden', id)
 
-    if (webviews.viewList.includes(id)) {
-      webviews.viewList.splice(webviews.viewList.indexOf(id), 1)
-      ipc.send('destroyView', id)
+    if (webviews.hasViewForTab(id)) {
+      tasks.getTaskContainingTab(id).tabs.update(id, {
+        hasWebContents: false
+      })
     }
+    //we may be destroying a view for which the tab object no longer exists, so this message should be sent unconditionally
+    ipc.send('destroyView', id)
+
     delete webviews.viewFullscreenMap[id]
     if (webviews.selectedId === id) {
       webviews.selectedId = null
@@ -280,7 +293,7 @@ const webviews = {
 
     if (webviews.placeholderRequests.length === 0) {
       // multiple things can request a placeholder at the same time, but we should only show the view again if nothing requires a placeholder anymore
-      if (webviews.viewList.includes(webviews.selectedId)) {
+      if (webviews.hasViewForTab(webviews.selectedId)) {
         ipc.send('setView', {
           id: webviews.selectedId,
           bounds: webviews.getViewBounds(),
@@ -307,14 +320,13 @@ const webviews = {
   resize: function () {
     ipc.send('setBounds', { id: webviews.selectedId, bounds: webviews.getViewBounds() })
   },
-  goBackIgnoringRedirects: function (id) {
-    /* If the current page is an error page, we actually want to go back 2 pages, since the last page would otherwise send us back to the error page
-    TODO we want to do the same thing for reader mode as well, but only if the last page was redirected to reader mode (since it could also be an unrelated page)
-    */
+  goBackIgnoringRedirects: async function (id) {
+    const navHistory = await webviews.getNavigationHistory(id)
+    // If the current page is an internal page resulting from a redirect (error pages or reader mode), go back two pages
 
-    var url = tabs.get(id).url
+    var url = navHistory.entries[navHistory.activeIndex].url
 
-    if (url.startsWith(urlParser.parse('min://error'))) {
+    if (urlParser.isInternalURL(url) && navHistory.activeIndex > 1 && navHistory.entries[navHistory.activeIndex - 1].url === urlParser.getSourceURL(url)) {
       webviews.callAsync(id, 'canGoToOffset', -2, function (err, result) {
         if (!err && result === true) {
           webviews.callAsync(id, 'goToOffset', -2)
@@ -348,6 +360,9 @@ const webviews = {
       webviews.asyncCallbacks[callId] = cb
     }
     ipc.send('callViewMethod', { id: id, callId: callId, method: method, args: args })
+  },
+  getNavigationHistory: function (id) {
+    return ipc.invoke('getNavigationHistory', id)
   }
 }
 
@@ -451,7 +466,7 @@ webviews.bindIPC('setSetting', function (tabId, args) {
 settings.listen(function () {
   tasks.forEach(function (task) {
     task.tabs.forEach(function (tab) {
-      if (tab.url.startsWith('file://')) {
+      if (tab.url.startsWith('min://')) {
         try {
           webviews.callAsync(tab.id, 'send', ['receiveSettingsData', settings.list])
         } catch (e) {
@@ -468,8 +483,14 @@ webviews.bindIPC('scroll-position-change', function (tabId, args) {
   })
 })
 
+webviews.bindIPC('downloadFile', function (tabId, args) {
+  if (tabs.get(tabId).url.startsWith('min://')) {
+    webviews.callAsync(tabId, 'downloadURL', [args[0]])
+  }
+})
+
 ipc.on('view-event', function (e, args) {
-  webviews.emitEvent(args.event, args.viewId, args.args)
+  webviews.emitEvent(args.event, args.tabId, args.args)
 })
 
 ipc.on('async-call-result', function (e, args) {
@@ -478,13 +499,13 @@ ipc.on('async-call-result', function (e, args) {
 })
 
 ipc.on('view-ipc', function (e, args) {
-  if (!webviews.viewList.includes(args.id)) {
+  if (!webviews.hasViewForTab(args.id)) {
     // the view could have been destroyed between when the event was occured and when it was recieved in the UI process, see https://github.com/minbrowser/min/issues/604#issuecomment-419653437
     return
   }
   webviews.IPCEvents.forEach(function (item) {
     if (item.name === args.name) {
-      item.fn(args.id, [args.data], args.frameId)
+      item.fn(args.id, [args.data], args.frameId, args.frameURL)
     }
   })
 })

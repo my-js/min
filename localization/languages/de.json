@@ -23,16 +23,21 @@
     "cut": "Ausschneiden",
     "copy": "Kopieren", //this is a verb (as in "copy the currently-selected text")
     "paste": "Einfügen",
+    "pasteAndMatchStyle": "Einfügen und Stil anpassen", 
     "goBack": "Gehe zurück",
     "goForward": "Gehe vorwärts",
     "inspectElement": "Element untersuchen",
+    "translatePage": "Seite übersetzten", 
     /* searchbar */
+    "placesPluginOpenAgain": "Nochmal öffnen",
+    "placesPluginSwitchToTab": "Zu Tab wechseln", 
+    "placesPluginSwitchToTask": "Zu \"%t\" wechseln",
     "pasteAndGo": "Einfügen und los",
     "DDGAnswerSubtitle": "Antwort", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Vorgeschlagene Seite", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Ergebnisse von DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Aufgabe %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Mehr anzeigen",
@@ -50,6 +55,9 @@
     "addBookmark": "Zu Lesezeichen hinzufügen",
     "searchBookmarks": "Lesezeichen durchsuchen",
     "bookmarksAddTag": "Schlagwort hinzufügen...",
+    "bookmarksRenameTag": "Schlagwort umbenennen",
+    "bookmarksDeleteTag": "Schlagwort löschen",
+    "deleteBookmarksWithTag": "Lesezeichen mit Schlagwort löschen",
     "bookmarksSimilarItems": "Ähnliche Einträge",
     "searchHistory": "Verlauf durchsuchen",
     "importBookmarks": "Lesezeichen von HTML Datei importieren",
@@ -71,7 +79,7 @@
     "taskDeleteWarning": {
       "unsafeHTML": "Aufgabe gelöscht. <a>Rückgängig machen?</a>"
     },
-    "tasksSearchTabs": null, //missing translation
+    "tasksSearchTabs": "Suche Tabs",
     "returnToTask": "Zur vorherigen Aufgabe zurückkehren",
     "taskDescriptionTwo": "%t und %t",
     "taskDescriptionThree": "%t, %t, und %n mehr",
@@ -105,23 +113,18 @@
     "sslErrorMessage": "Min konnte keine sichere Verbindung mit dieser Webseite aufbauen.",
     "dnsErrorTitle": "Webseite nicht gefunden",
     "dnsErrorMessage": "Es trat ein DNS-Fehler auf.",
-    "offlineErrorTitle": "Sie sind offline",
+    "offlineErrorTitle": "Du bist offline",
     "offlineErrorMessage": "Wieder mit dem Internet verbinden und erneut versuchen.",
     "genericConnectionFail": "Min konnte sich nicht mit dieser Webseite verbinden.",
-    "sslTimeErrorMessage": "Min konnte keine sichere Verbindung mit dieser Webseite aufbauen. Bitte stellen Sie sicher, dass Ihre Computeruhr korrekt eingestellt ist.",
+    "sslTimeErrorMessage": "Min konnte keine sichere Verbindung mit dieser Webseite aufbauen. Bitte stelle sicher, dass deine Computeruhr korrekt eingestellt ist.",
     "addressInvalidTitle": "Diese Adresse ist ungültig.",
     "genericError": "Es trat ein Fehler auf",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Diese Seite könnte Schaden anrichten.",
-    "phishingErrorMessage": "Diese Webseite könnte versuchen, persönliche Informationen wie Passwörter und Bankdaten zu stehlen.",
-    "phishingErrorVisitAnyway": "Seite trotzdem besuchen",
-    "phishingErrorLeave": "Seite verlassen",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Ein Fehler ist aufgetreten. Bitte schließe alle anderen offenen Instanzen und starte Min neu.",
     /* pages/sessionRestoreError/index.html */
     "sessionRestoreErrorTitle": "Es trat ein Fehler auf",
     "sessionRestoreErrorExplanation": "Die gespeicherten Tabs konnten nicht wiederhergestellt werden.",
-    "sessionRestoreErrorBackupInfo": "Wir haben ein Backup Ihrer Daten hier gespeichert: %l.", //%l will be replaced with a path to a file
+    "sessionRestoreErrorBackupInfo": "Wir haben ein Backup deiner Daten hier gespeichert: %l.", //%l will be replaced with a path to a file
     "sessionRestoreErrorLinkInfo": {
       "unsafeHTML": "Falls dieser Fehler wiederholt auftritt, bitte <a href=\"https://github.com/minbrowser/min\" target=\"_blank\">hier</a> eine neue Fehlermeldung eröffnen."
     },
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "Bis jetzt hat Min <strong></strong> Werbeanzeigen und Aktivitätsverfolgungen blockiert."
     },
-    "settingsCustomBangs": "Benutzerdefinierte Bangs",
-    "settingsCustomBangsAdd": "Bang hinzufügen",
+    "settingsCustomBangs": "Benutzerdefinierte Befehle",
+    "settingsCustomBangsAdd": "Neuen Befehl hinzufügen", 
     "settingsCustomBangsPhrase": "Ausdruck (zwingend)",
     "settingsCustomBangsSnippet": "Beschreibung (optional)",
     "settingsCustomBangsRedirect": "URL-Weiterleitung (zwingend)",
@@ -154,17 +157,26 @@
     "settingsAdditionalFeaturesHeading": "Zusätzliche Funktionen",
     "settingsUserscriptsToggle": "Benutzerdefinierte Skripte aktivieren",
     "settingsShowDividerToggle": "Trennwand zwischen Tabs anzeigen",
-    "settingsSeparateTitlebarToggle": "Seperate Titelleiste nutzen",
+    "settingsLanguageSelection": "Sprache: ", 
+    "settingsSeparateTitlebarToggle": "Separate Titelleiste nutzen",
     "settingsAutoplayToggle": "Automatische Wiedergabe erlauben", 
     "settingsOpenTabsInForegroundToggle": "Neue Tabs im Vordergrund öffnen",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Benutzerdefinierte Skripte erlauben es das Verhalten von Webseiten zu modifizieren - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\"> mehr dazu.</a>."
     },
+    "settingsUserscriptShowDirectory": "Skriptverzeichnis anzeigen",
     "settingsUserAgentToggle": "Benutzerdefinierten Benutzer-Agent nutzen",
     "settingsUpdateNotificationsToggle": "Automatisch nach Aktualisierungen überprüfen",
     "settingsUsageStatisticsToggle": {
       "unsafeHTML": "Sende anonyme Nutzungsstatistiken (<a href=\"https://github.com/minbrowser/min/blob/master/docs/statistics.md\">Mehr Infos</a>)"
     },
+    "settingsStartupOptions": "Wenn Min startet:", 
+    "settingsStartupCreateTask": "Vorherige Tabs erneut öffnen", 
+    "settingsStartupNewTaskandBackground": "Vorherige Tabs zu einer Hintergrundaufgabe verschieben",
+    "settingsStartupNewTaskOnly": "Neue leere Aufgabe öffnen", 
+    "settingsNewWindowOptions": "In neuem Fenster: ", 
+    "settingsNewWindowCreateTask": "Neue Aufgabe erstellen",
+    "settingsNewWindowPickTask": "Aufgabenliste anzeigen",
     "settingsSearchEngineHeading": "Suchmaschine",
     "settingsDefaultSearchEngine": "Standardsuchmaschine auswählen:",
     "settingsDDGExplanation": "DuckDuckGo als Standardsuchmaschine einstellen, um Vorschläge sofort in der Suchleiste zu erhalten.",
@@ -184,6 +196,7 @@
     "appMenuDuplicateTab": "Tab duplizieren",
     "appMenuNewPrivateTab": "Neuer privater Tab",
     "appMenuNewTask": "Neue Aufgabe",
+    "appMenuNewWindow": "Neuer Fenster",
     "appMenuSavePageAs": "Seite speichern als",
     "appMenuPrint": "Drucken",
     "appMenuEdit": "Ändern",
@@ -192,6 +205,7 @@
     "appMenuCut": "Ausschneiden",
     "appMenuCopy": "Kopieren",
     "appMenuPaste": "Einfügen",
+    "appMenuPasteAndMatchStyle": "Einfügen und Stil anpassen", 
     "appMenuSelectAll": "Alles auswählen",
     "appMenuFind": "Finden",
     "appMenuView": "Ansicht",
@@ -223,7 +237,11 @@
     "appMenuShowAll": "Alle anzeigen",
     "appMenuQuit": "Beende %n",
     "appMenuBringToFront": "Alle nach vorne bringen",
+    /* Tab menu */
+    "tabMenuNewWindow": "Tab in ein neues Fenster verschieben", 
+    "tabMenuReload": "Neu laden",
     /* PDF Viewer */
+    "PDFInvertPage": "Seitenfarben invertieren",
     "PDFPageCounter": {
       "unsafeHTML": "Seite <input type='text'/> von <span id='total'></span>"
     },
@@ -244,11 +262,11 @@
     /* Update Notifications */
     "updateNotificationTitle": "Eine neue Version von Min ist verfügbar",
     /* Autofill settings */
-    "settingsPasswordAutoFillHeadline": "Passwörter automatisch Ausfüllen",
+    "settingsPasswordAutoFillHeadline": "Passwörter automatisch ausfüllen",
     "settingsSelectPasswordManager": "Wähle einen der unterstützten Passwortmanager:",
     "keychainViewPasswords": "Gespeicherte Zugangsdaten anzeigen",
     /* Password manager setup */
-    "passwordManagerSetupHeading": "Beende die Konfiguration von %p um die automatische Ausfüll Funktion zu nutzen",
+    "passwordManagerSetupHeading": "Beende die Konfiguration von %p um die automatische Ausfüllfunktion zu nutzen",
     "passwordManagerSetupStep1": {
       "unsafeHTML": "Als erstes, <a id='password-manager-setup-link'></a> und extrahiere es auf dein System."
     },
@@ -256,28 +274,29 @@
       "unsafeHTML": "Lade <a id='password-manager-setup-link-installer'></a> herunter und ziehe die Datei unten in die Box:"
     },
     "passwordManagerSetupLink": "Lade die %p Befehlszeilenschnittstelle herunter",
-    "passwordManagerSetupLinkInstaller": "Die %p Befehlzeilenschnittstelle Installationsprogramm",
+    "passwordManagerSetupLinkInstaller": "Das %p Befehlszeilenschnittstelle Installationsprogramm",
     "passwordManagerSetupStep2": "Ziehe danach das Programm in die untere Box:",
     "passwordManagerSetupDragBox": "Ziehe das Programm hierher",
     "passwordManagerSetupInstalling": "Installiere...",
-    "passwordManagerBitwardenSignIn": null, //missing translation
-    "passwordManagerSetupSignIn": "Melde dich in deinem Passwortmanager an, um die automatische Ausfüll Funktion zu nutzen. Deine Zugangsdaten werden nirgendwo in Min gespeichert.",
-    "disableAutofill": "Automatische Ausfüll Funktion deaktivieren",
+    "passwordManagerBitwardenSignIn": "Um dein Bitwarden Konto zu verbinden, gehe zu vault.bitwarden.com/#/settings/account, scrolle bis zum Ende und wähle \"View API Key\". Dann kopiere die Werte in die derunterliegenden Felder.",
+    "passwordManagerSetupSignIn": "Melde dich in deinem Passwortmanager an, um die automatische Ausfüllfunktion zu nutzen. Deine Zugangsdaten werden nirgendwo in Min gespeichert.",
+    "disableAutofill": "Automatische Ausfüllfunktion deaktivieren",
     "passwordManagerSetupUnlockError": "Beim Entsperren des Passwortmanagers ist ein Fehler aufgetreten:",
-    "passwordManagerSetupRetry": "Stelle sicher, dass die richtige Datei genutzt und das richtige Passwort eingegeben wurde. Ziehe das Programm wieder hierher, um es noch mal zu versuchen.",
+    "passwordManagerSetupRetry": "Stelle sicher, dass die richtige Datei genutzt und das richtige Passwort eingegeben wurde. Ziehe das Programm wieder hierher, um es nochmal zu versuchen.",
     "passwordManagerUnlock": "Gib dein %p Masterpasswort ein, um deinen Passwortmanager zu entsperren:",
     /* Password save bar */
     "passwordCaptureSavePassword": "Zugangsdaten für %s speichern?",
     "passwordCaptureSave": "Speichern",
     "passwordCaptureDontSave": "Nicht speichern",
     "passwordCaptureNeverSave": "Niemals speichern",
+    "generatePassword": "Passwort generieren",
     /* Password viewer */
     "savedPasswordsHeading": "Gespeicherte Passwörter",
     "savedPasswordsEmpty": "Keine gespeicherten Passwörter",
-    "savedPasswordsNeverSavedLabel": "keine Passwortspeicherung",
+    "savedPasswordsNeverSavedLabel": "Keine Passwortspeicherung",
     "deletePassword": "Zugangsdaten für %s löschen?",
     /* Dialogs */
-    "loginPromptTitle": "Bei %h (%r) anmelden", //%h is replaced with host, %r with realm (title of protected part of site)
+    "loginPromptTitle": "Bei %h anmelden", //%h is replaced with host, %r with realm (title of protected part of site)
     "dialogConfirmButton": "Bestätigen",
     "dialogSkipButton": "Abbrechen",
     "username": "Benutzername",

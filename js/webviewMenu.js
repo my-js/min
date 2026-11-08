@@ -6,6 +6,7 @@ const searchEngine = require('util/searchEngine.js')
 const userscripts = require('userscripts.js')
 const settings = require('util/settings/settings.js')
 const pageTranslations = require('pageTranslations.js')
+const PasswordManagers = require('passwordManager/passwordManager.js')
 
 const remoteMenu = require('remoteMenuRenderer.js')
 
@@ -73,8 +74,6 @@ const webviewMenu = {
       link = null
     }
 
-    var mediaURL = data.srcURL
-
     if (link) {
       var linkActions = [
         {
@@ -102,14 +101,18 @@ const webviewMenu = {
       linkActions.push({
         label: l('saveLinkAs'),
         click: function () {
-          ipc.invoke('downloadURL', link)
+          webviews.callAsync(tabs.getSelected(), 'downloadURL', [link])
         }
       })
 
       menuSections.push(linkActions)
-    } else if (mediaURL && data.mediaType === 'image') {
-      /* images */
-      /* we don't show the image actions if there are already link actions, because it makes the menu too long and because the image actions typically aren't very useful if the image is a link */
+    }
+
+    /* images */
+
+    var mediaURL = data.srcURL
+
+    if (mediaURL && data.mediaType === 'image') {
 
       var imageActions = [
         {
@@ -141,16 +144,14 @@ const webviewMenu = {
         }
       })
 
-      menuSections.push(imageActions)
-
-      menuSections.push([
-        {
-          label: l('saveImageAs'),
-          click: function () {
-            ipc.invoke('downloadURL', mediaURL)
-          }
+      imageActions.push({
+        label: l('saveImageAs'),
+        click: function () {
+          webviews.callAsync(tabs.getSelected(), 'downloadURL', [mediaURL])
         }
-      ])
+      })
+
+      menuSections.push(imageActions)
     }
 
     /* selected text */
@@ -168,7 +169,7 @@ const webviewMenu = {
             })
             browserUI.addTab(newTab, {
               enterEditMode: false,
-              openInBackground: openInBackground
+              openInBackground: false
             })
           }
         }
@@ -203,6 +204,15 @@ const webviewMenu = {
       })
     }
 
+    if (data.editFlags && data.editFlags.canPaste) {
+      clipboardActions.push({
+        label: l('pasteAndMatchStyle'),
+        click: function () {
+          webviews.callAsync(tabs.getSelected(), 'pasteAndMatchStyle')
+        }
+      })
+    }
+
     if (link || (mediaURL && !mediaURL.startsWith('blob:'))) {
       if (link && link.startsWith('mailto:')) {
         var ematch = link.match(/(?<=mailto:)[^\?]+/)
@@ -210,7 +220,9 @@ const webviewMenu = {
           clipboardActions.push({
             label: l('copyEmailAddress'),
             click: function () {
-              clipboard.writeText(ematch[0])
+              ipc.send('clipboardWriteItem', {
+                'text/plain': ematch[0]
+              })
             }
           })
         }
@@ -218,7 +230,9 @@ const webviewMenu = {
         clipboardActions.push({
           label: l('copyLink'),
           click: function () {
-            clipboard.writeText(link || mediaURL)
+            ipc.send('clipboardWriteItem', {
+              'text/plain': link || mediaURL
+            })
           }
         })
       }
@@ -226,6 +240,17 @@ const webviewMenu = {
 
     if (clipboardActions.length !== 0) {
       menuSections.push(clipboardActions)
+    }
+
+    if (data.formControlType === 'input-password' && PasswordManagers.getActivePasswordManager()?.saveCredential) {
+      menuSections.push([
+        {
+          label: l('generatePassword'),
+          click: function () {
+            webviews.callAsync(tabs.getSelected(), 'send', ['generate-password', { x: data.x, y: data.y }])
+          }
+        }
+      ])
     }
 
     var navigationActions = [
@@ -286,7 +311,7 @@ const webviewMenu = {
     }
 
     var translateMenu = {
-      label: 'Translate Page (Beta)',
+      label: l('translatePage'),
       submenu: []
     }
 

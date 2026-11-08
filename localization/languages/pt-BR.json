@@ -23,16 +23,21 @@
     "cut": "Recortar",
     "copy": "Copiar", //this is a verb (as in "copy the currently-selected text")
     "paste": "Colar",
+    "pasteAndMatchStyle": "Colar e manter estilo",
     "goBack": "Voltar",
     "goForward": "Avançar",
     "inspectElement": "Inspecionar elemento",
+    "translatePage": null, // missing translation
     /* searchbar */
+    "placesPluginOpenAgain": null, // missing translation
+    "placesPluginSwitchToTab": null, // missing translation
+    "placesPluginSwitchToTask": null, // missing translation
     "pasteAndGo": "Colar e ir", //context menu item
     "DDGAnswerSubtitle": "Resposta", //this is a noun - it is used as a subtitle when displaying Instant Answers from DuckDuckGo in the searchbar
     "suggestedSite": "Site sugerido", //this is used to label suggested websites from the DuckDuckGo API,
     "resultsFromDDG": "Resultados do DuckDuckGo", //this is used as a label to indicate which results come from DuckDuckGo's API
     "taskN": "Tarefa %n", //this is used as a way to identify which tab a task is in "task 1", "task 2", ...
-    /* custom !bangs
+    /* custom commands
         these are some of the items that show up when you press ! in the searchbar.
         Each one of these strings describes what the command will do when you run it. */
     "showMoreBangs": "Mostrar mais...",
@@ -50,6 +55,9 @@
     "addBookmark": "Adicionar favorito",
     "searchBookmarks": "Buscar nos favoritos",
     "bookmarksAddTag": "Adicionar tag",
+    "bookmarksRenameTag": "Renomear tag",
+    "bookmarksDeleteTag": "Deletar tag",
+    "deleteBookmarksWithTag": "Excluir favoritos com tag",
     "bookmarksSimilarItems": "Itens semelhantes",
     "searchHistory": "Buscar no histórico",
     "importBookmarks": "Importar favoritos do arquivo HTML",
@@ -71,8 +79,8 @@
     "taskDeleteWarning": {
       "unsafeHTML": "Tarefa deletada! <a> desfazer?</a>"
     },
-    "tasksSearchTabs": null, //missing translation
-    "returnToTask": "Retornar a sua tarefa anterior",
+    "tasksSearchTabs": "Buscar abas",
+    "returnToTask": "Retornar à sua tarefa anterior",
     "taskDescriptionTwo": "%t e %t",
     "taskDescriptionThree": "%t e %t, mais %n",
     /* find in page toolbar */
@@ -82,7 +90,7 @@
     /* Focus mode */
     "isFocusMode": "Você está no modo concentração.",
     "closeDialog": "OK", //used as a label for the button that closes the dialog
-    "focusModeExplanation1": "No modo concentração, você não pode criar novas guias ou alternar tarefas.",
+    "focusModeExplanation1": "No modo concentração, você não pode criar novas abas ou alternar tarefas.",
     "focusModeExplanation2": "Você pode sair do modo concentração desmarcando \"Modo concentração\" no menu - Visualizar .",
     /* relative dates */
     "timeRangeJustNow": "Agora mesmo",
@@ -111,11 +119,6 @@
     "sslTimeErrorMessage": "O min não conseguiu se conectar de uma maneira segura a este site. Por favor, verifique se o relógio do computador está correto.",
     "addressInvalidTitle": "Endereço inválido.",
     "genericError": "Ocorreu um erro",
-    /* pages/phishing/index.html */
-    "phishingErrorTitle": "Este site é perigoso.",
-    "phishingErrorMessage": "Este website pode estar tentando roubar suas informações pessoais, como senhas ou detalhes bancários.",
-    "phishingErrorVisitAnyway": "Visitar site mesmo assim",
-    "phishingErrorLeave": "Sair deste site",
     /* multiple instances alert */
     "multipleInstancesErrorMessage": "Um erro foi detectado, por favor, feche todas as instâncias abertas e reinicie o Min",
     /* pages/sessionRestoreError/index.html */
@@ -138,8 +141,8 @@
     "settingsBlockedRequestCount": {
       "unsafeHTML": "Até agora, o Min bloqueou <strong> </strong> anúncios e rastreadores."
     },
-    "settingsCustomBangs": "Bangs personalizados",
-    "settingsCustomBangsAdd": "Adicionar um bang personalizado",
+    "settingsCustomBangs": null, // Missing translation
+    "settingsCustomBangsAdd": null, // Missing translation
     "settingsCustomBangsPhrase": "Comando (obrigatório)",
     "settingsCustomBangsSnippet": "Descrição (opcional)",
     "settingsCustomBangsRedirect": "URL de redirecionamento (obrigatório)",
@@ -149,22 +152,31 @@
     "settingsDarkModeNever": "Nunca",
     "settingsDarkModeNight": "À noite",
     "settingsDarkModeAlways": "Sempre",
-    "settingsDarkModeSystem": null,
+    "settingsDarkModeSystem": "Tema do sistema",
     "settingsSiteThemeToggle": "Habilitar mudanças de cores na barra de endereços",
     "settingsAdditionalFeaturesHeading": "Recursos adicionais",
     "settingsUserscriptsToggle": "Habilitar scripts do usuário",
-    "settingsShowDividerToggle": "Mostrar divisória entre as guias",
+    "settingsShowDividerToggle": "Mostrar divisória entre as abas",
+    "settingsLanguageSelection": "Idioma: ",
     "settingsSeparateTitlebarToggle": "Usar a barra de título separada",
-    "settingsAutoplayToggle": null, //missing translation 
-    "settingsOpenTabsInForegroundToggle": "Abrir novas guias em primeiro plano",
+    "settingsAutoplayToggle": "Habilitar reprodução automática",
+    "settingsOpenTabsInForegroundToggle": "Abrir novas abas em primeiro plano",
     "settingsUserscriptsExplanation": {
       "unsafeHTML": "Scripts do usuário permitem modificar o comportamento do site - <a href=\"https://github.com/minbrowser/min/wiki/userscripts\">Saiba mais</a>."
     },
+    "settingsUserscriptShowDirectory": "Exibir diretório do script",
     "settingsUserAgentToggle": "Usar agente de usuário personalizado",
     "settingsUpdateNotificationsToggle": "Verificar atualizações automaticamente",
     "settingsUsageStatisticsToggle": {
       "unsafeHTML": "Enviar estatísticas de uso (<a href=\"https://github.com/minbrowser/min/blob/master/docs/statistics.md\">Mais informações</a>)"
     },
+    "settingsStartupOptions": "Ao iniciar o Min:",
+    "settingsStartupCreateTask": "Reabrir abas anteriores",
+    "settingsStartupNewTaskandBackground": "Mover abas anteriores para uma tarefa em segundo plano",
+    "settingsStartupNewTaskOnly": "Iniciar uma nova tarefa",
+    "settingsNewWindowOptions": "Em novas janelas",
+    "settingsNewWindowCreateTask": "Criar uma nova tarefa",
+    "settingsNewWindowPickTask": "Exibir tarefas",
     "settingsSearchEngineHeading": "Serviço de busca",
     "settingsDefaultSearchEngine": "Escolha o serviço de busca padrão:",
     "settingsDDGExplanation": "Defina DuckDuckGo como o serviço padrão de buscas para ver respostas instantâneas na barra de busca.",
@@ -184,6 +196,7 @@
     "appMenuDuplicateTab": "Duplicar aba atual",
     "appMenuNewPrivateTab": "Nova aba privada",
     "appMenuNewTask": "Nova tarefa",
+    "appMenuNewWindow": "Nova janela",
     "appMenuSavePageAs": "Salvar página como",
     "appMenuPrint": "Imprimir",
     "appMenuEdit": "Editar",
@@ -192,6 +205,7 @@
     "appMenuCut": "Recortar",
     "appMenuCopy": "Copiar",
     "appMenuPaste": "Colar",
+    "appMenuPasteAndMatchStyle": "Colar e manter estilo",
     "appMenuSelectAll": "Selecionar tudo",
     "appMenuFind": "Buscar na página",
     "appMenuView": "Visualizar",
@@ -223,14 +237,18 @@
     "appMenuShowAll": "Mostrar tudo",
     "appMenuQuit": "Sair do %n",
     "appMenuBringToFront": "Trazer tudo para a frente",
+    /* Tab menu */
+    "tabMenuNewWindow": null, // missing translation
+    "tabMenuReload": null, // missing translation
     /* PDF Viewer */
+    "PDFInvertPage": "Inverter cores da página",
     "PDFPageCounter": {
       "unsafeHTML": "página <input type='text'/> de <span id='total'></span>"
     },
     /* Context Reader */
     "buttonReaderSettings": "Configurações do modo leitura",
     "buttonReaderLightTheme": "Claro",
-    "buttonReaderSepiaTheme": "Sepia ",
+    "buttonReaderSepiaTheme": "Sépia ",
     "buttonReaderDarkTheme": "Escuro",
     "openReaderView": "Sempre abrir em modo leitura",
     "autoRedirectBannerReader": "Sempre abrir artigos deste site em modo leitura?",
@@ -260,7 +278,7 @@
     "passwordManagerSetupStep2": "Em seguida, arraste a ferramenta para a caixa abaixo:",
     "passwordManagerSetupDragBox": "Arraste a ferramenta aqui",
     "passwordManagerSetupInstalling": "Instalando ...",
-    "passwordManagerBitwardenSignIn": null, //missing translation
+    "passwordManagerBitwardenSignIn": "Para conectar com sua conta do Bitwarden, acesse vault.bitwarden.com/#/settings/account, vá na parte inferior da página, clique em \"View API Key\". E cole os valores nos campos abaixo.",
     "passwordManagerSetupSignIn": "Entre no seu gerenciador de senhas para começar a usar o preenchimento automático. Suas credenciais não serão armazenadas em nenhum lugar do Min.",
     "disableAutofill": "Desativar preenchimento automático",
     "passwordManagerSetupUnlockError": "Falha ao desbloquear o armazenamento de senhas:",
@@ -270,21 +288,22 @@
     "passwordCaptureSavePassword": "Salvar senha para %s?",
     "passwordCaptureSave": "Salvar",
     "passwordCaptureDontSave": "Não salvar",
-    "passwordCaptureNeverSave": null, //missing translation
+    "passwordCaptureNeverSave": "Nunca salvar",
+    "generatePassword": null, // missing translation
     /* Password viewer */
     "savedPasswordsHeading": "Senhas salvas",
     "savedPasswordsEmpty": "Nenhuma senha salva",
-    "savedPasswordsNeverSavedLabel": null, //missing translation
+    "savedPasswordsNeverSavedLabel": "Nunca salvo",
     "deletePassword": "Excluir senha de %s?",
     /* Dialogs */
-    "loginPromptTitle": "Fazer login em %h (%r)",
+    "loginPromptTitle": "Fazer login em %h",
     "dialogConfirmButton": "Confirmar",
     "dialogSkipButton": "Cancelar",
     "username": "Nome de usuário",
     "email": "Email",
     "password": "Senha",
     "secretKey": "Chave secreta",
-    "openExternalApp": null, //missing translation
+    "openExternalApp": "Abrir em \\\"%s\\\"?", //%s is the name of an app
     "clickToCopy": "Clique para copiar",
     "copied": "Copiado"
   }
